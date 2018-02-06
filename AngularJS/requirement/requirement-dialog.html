@@ -1,0 +1,190 @@
+
+<form name="editForm" role="form" novalidate ng-submit="vm.save()" show-validation>
+
+    <div class="modal-header inverse">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
+                ng-click="vm.clear()">&times;</button>
+        <h4 class="modal-title" id="myRequirementLabel" data-translate="adqApp.requirement.home.createOrEditLabel">Create or edit a Requirement</h4>
+    </div>
+    <div class="modal-body">
+        <jhi-alert-error></jhi-alert-error>
+        <div class="form-group" ng-show="vm.requirement.id">
+            <label for="id" data-translate="global.field.id">ID</label>
+            <input type="text" class="form-control" id="id" name="id"
+                    ng-model="vm.requirement.id" readonly />
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="adqApp.requirement.businessUnit" for="field_businessUnit">Business Unit</label>
+            <input type="text" class="form-control" name="businessUnit" id="field_businessUnit"
+                    ng-model="vm.requirement.businessUnit"
+                    required/>
+            <div ng-show="editForm.businessUnit.$invalid">
+                <p class="help-block"
+                    ng-show="editForm.businessUnit.$error.required" data-translate="entity.validation.required">
+                    This field is required.
+                </p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="adqApp.requirement.folio" for="field_folio">Folio</label>
+            <input type="text" class="form-control" name="folio" id="field_folio"
+                    ng-model="vm.requirement.folio"
+                    required/>
+            <div ng-show="editForm.folio.$invalid">
+                <p class="help-block"
+                    ng-show="editForm.folio.$error.required" data-translate="entity.validation.required">
+                    This field is required.
+                </p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="adqApp.requirement.dateInitialElaboration" for="field_dateElaboration">Date Elaboration</label>
+                <div class="input-group">
+                    <input id="field_dateElaboration" type="text" class="form-control" name="dateInitialElaboration" uib-datepicker-popup="{{dateformat}}" ng-model="vm.requirement.dateInitialElaboration" is-open="vm.datePickerOpenStatus.dateInitialElaboration"
+                    required/>
+                    <span class="input-group-btn">
+                        <button type="button" class="btn btn-default" ng-click="vm.openCalendar('dateInitialElaboration')"><i class="glyphicon glyphicon-calendar"></i></button>
+                    </span>
+                </div>
+            <div ng-show="editForm.dateInitialElaboration.$invalid">
+                <p class="help-block"
+                    ng-show="editForm.dateInitialElaboration.$error.required" data-translate="entity.validation.required">
+                    This field is required.
+                </p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="adqApp.requirement.idRequest" for="field_idRequest">Id Request</label>
+            <input type="text" class="form-control" name="idRequest" id="field_idRequest"
+                    ng-model="vm.requirement.idRequest"
+                    />
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="adqApp.requirement.dateRequired" for="field_dateRequired">Date Required</label>
+                <div class="input-group">
+                    <input id="field_dateRequired" type="text" class="form-control" name="dateRequired" uib-datepicker-popup="{{dateformat}}" ng-model="vm.requirement.dateRequired" is-open="vm.datePickerOpenStatus.dateRequired"
+                    required/>
+                    <span class="input-group-btn">
+                        <button type="button" class="btn btn-default" ng-click="vm.openCalendar('dateRequired')"><i class="glyphicon glyphicon-calendar"></i></button>
+                    </span>
+                </div>
+            <div ng-show="editForm.dateRequired.$invalid">
+                <p class="help-block"
+                    ng-show="editForm.dateRequired.$error.required" data-translate="entity.validation.required">
+                    This field is required.
+                </p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="adqApp.requirement.folioReference" for="field_folioReference">Folio Reference</label>
+            <input type="text" class="form-control" name="folioReference" id="field_folioReference"
+                    ng-model="vm.requirement.folioReference"
+                    />
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="adqApp.requirement.descriptionService" for="field_descriptionService">Description Service</label>
+            <input type="text" class="form-control" name="descriptionService" id="field_descriptionService"
+                    ng-model="vm.requirement.descriptionService"
+                    required/>
+            <div ng-show="editForm.descriptionService.$invalid">
+                <p class="help-block"
+                    ng-show="editForm.descriptionService.$error.required" data-translate="entity.validation.required">
+                    This field is required.
+                </p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="adqApp.requirement.procedureNumberCompranet" for="field_procedureNumberCompranet">Procedure Number Compranet</label>
+            <input type="text" class="form-control" name="procedureNumberCompranet" id="field_procedureNumberCompranet"
+                    ng-model="vm.requirement.procedureNumberCompranet"
+                    />
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="adqApp.requirement.lastModified" for="field_lastModified">Last Modified</label>
+                <div class="input-group">
+                    <input id="field_lastModified" type="text" class="form-control" name="lastModified" datetime-picker="{{dateformat}}" ng-model="vm.requirement.lastModified" is-open="vm.datePickerOpenStatus.lastModified"
+                    required/>
+                    <span class="input-group-btn">
+                        <button type="button" class="btn btn-default" ng-click="vm.openCalendar('lastModified')"><i class="glyphicon glyphicon-calendar"></i></button>
+                    </span>
+                </div>
+            <div ng-show="editForm.lastModified.$invalid">
+                <p class="help-block"
+                    ng-show="editForm.lastModified.$error.required" data-translate="entity.validation.required">
+                    This field is required.
+                </p>
+                <p class="help-block"
+                    ng-show="editForm.lastModified.$error.ZonedDateTimelocal" data-translate="entity.validation.ZonedDateTimelocal">
+                    This field should be a date and time.
+                </p>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label" data-translate="adqApp.requirement.originalNumberFolio" for="field_originalNumberFolio">Original Number Folio</label>
+            <input type="text" class="form-control" name="originalNumberFolio" id="field_originalNumberFolio"
+                    ng-model="vm.requirement.originalNumberFolio"/>
+        </div>
+
+        <div class="form-group">
+            <label data-translate="adqApp.requirement.agreement" for="field_agreement">Agreement</label>
+            <select class="form-control" id="field_agreement" name="agreement" ng-model="vm.requirement.agreement" ng-options="agreementType as agreementType.id for agreementType in vm.agreementtypes track by agreementType.id">
+                <option value=""></option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label data-translate="adqApp.requirement.department" for="field_department">Department</label>
+            <select class="form-control" id="field_department" name="department" ng-model="vm.requirement.department" ng-options="department as department.id for department in vm.departments track by department.id">
+                <option value=""></option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label data-translate="adqApp.requirement.status" for="field_status">Status</label>
+            <select class="form-control" id="field_status" name="status" ng-model="vm.requirement.status" ng-options="status as status.id for status in vm.statuses track by status.id">
+                <option value=""></option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label data-translate="adqApp.requirement.process" for="field_process">Process</label>
+            <select class="form-control" id="field_process" name="process" ng-model="vm.requirement.process" ng-options="process as process.id for process in vm.processes track by process.id">
+                <option value=""></option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label data-translate="adqApp.requirement.applicableArticle" for="field_applicableArticle">Applicable Article</label>
+            <select class="form-control" id="field_applicableArticle" name="applicableArticle" ng-model="vm.requirement.applicableArticle" ng-options="applicableArticle as applicableArticle.name for applicableArticle in vm.applicablearticles track by applicableArticle.id" required>
+            </select>
+        </div>
+        <div ng-show="editForm.applicableArticle.$invalid">
+            <p class="help-block"
+                ng-show="editForm.applicableArticle.$error.required" data-translate="entity.validation.required">
+                This field is required.
+            </p>
+        </div>
+        <div class="form-group">
+            <label data-translate="adqApp.requirement.requirementData" for="field_requirementData">Requirement Data</label>
+            <select class="form-control" id="field_requirementData" name="requirementData" ng-model="vm.requirement.requirementData" ng-options="requirementDt as requirementDt.id for requirementDt in vm.requirementdts track by requirementDt.id">
+                <option value=""></option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label data-translate="adqApp.requirement.requirementDetail" for="field_requirementDetail">Requirement Detail</label>
+            <select class="form-control" id="field_requirementDetail" name="requirementDetail" ng-model="vm.requirement.requirementDetail" ng-options="requirementDe as requirementDe.id for requirementDe in vm.requirementdes track by requirementDe.id">
+                <option value=""></option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label data-translate="adqApp.requirement.agreementModificationType" for="field_agreementModificationType">Agreement Modification Type</label>
+            <select class="form-control" id="field_agreementModificationType" name="agreementModificationType" ng-model="vm.requirement.agreementModificationType" ng-options="agreModiType as agreModiType.name for agreModiType in vm.agremoditypes track by agreModiType.id">
+                <option value=""></option>
+            </select>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="vm.clear()">
+            <span class="glyphicon glyphicon-ban-circle"></span>&nbsp;<span data-translate="entity.action.cancel">Cancel</span>
+        </button>
+        <button type="submit" ng-disabled="editForm.$invalid || vm.isSaving" class="btn btn-primary">
+            <span class="glyphicon glyphicon-save"></span>&nbsp;<span data-translate="entity.action.save">Save</span>
+        </button>
+    </div>
+</form>

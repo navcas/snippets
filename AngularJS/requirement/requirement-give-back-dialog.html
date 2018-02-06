@@ -1,0 +1,28 @@
+<form name="giveBackForm" ng-submit="vm.confirmGiveBack()">
+    <div class="modal-header inverse">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
+                ng-click="vm.clear()">&times;</button>
+        <h4 ng-if="vm.isUserAdmin" class="modal-title" data-translate="adqApp.requirement.giveBack.admin.header">Confirm Give Back to Applicant</h4>
+        <h4 ng-if="vm.isUserHeadDepartment" class="modal-title" data-translate="adqApp.requirement.giveBack.headDepartment.header">Confirm give back to Head Department</h4>
+        <h4 ng-if="vm.isUserReviewer" class="modal-title" data-translate="adqApp.requirement.giveBack.reviewer.header">Confirm give back to Reviewer</h4>
+    </div>
+    <div class="modal-body">
+        <jhi-alert-error></jhi-alert-error>
+        <div class="form-group">
+            <p  ng-if="vm.isUserAdmin" data-translate="adqApp.requirement.giveBack.admin.question" ng-bind-html="adqApp.requirement.giveBack.admin.question"
+               translate-values="{fullName: '{{vm.user.fullName}}'}">Are you sure you want to give back this Requirement to Admin?</p>
+            <p ng-if="vm.isUserHeadDepartment" data-translate="adqApp.requirement.giveBack.headDepartment.question" ng-bind-html="adqApp.requirement.giveBack.headDepartment.question"
+               translate-values="{fullName: '{{vm.user.fullName}}'}">Are you sure you want to give back this Requirement to Head Department?</p>
+            <p ng-if="vm.isUserReviewer" data-translate="adqApp.requirement.giveBack.reviewer.question" ng-bind-html="adqApp.requirement.giveBack.reviewer.question"
+               translate-values="{fullName: '{{vm.user.fullName}}'}">Are you sure you want to give back this Requirement to Reviewer?</p>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="vm.clear()">
+            <span class="glyphicon glyphicon-ban-circle"></span>&nbsp;<span data-translate="entity.action.cancel">Cancel</span>
+        </button>
+        <button type="submit" ng-disabled="giveBackForm.$invalid" class="btn btn-primary">
+            <span class="glyphicon glyphicon-send"></span>&nbsp;<span data-translate="entity.action.giveBack">Give Back</span>
+        </button>
+    </div>
+</form>

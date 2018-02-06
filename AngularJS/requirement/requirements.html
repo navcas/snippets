@@ -1,0 +1,133 @@
+<div>
+    <h2 data-translate="adqApp.requirement.home.title">Requirements</h2>
+    <jhi-alert></jhi-alert>
+    <div class="container-fluid">
+        <div class="row" ng-if="vm.hasPermissionSaveRequirement">
+            <div class="col-xs-4 no-padding-left">
+                <button class="btn btn-primary" ui-sref="requirement.new" uib-tooltip="{{'adqApp.requirement.home.createLabel' | translate}}">
+                    <span class="glyphicon glyphicon-plus"></span>&nbsp;
+                    <span data-translate="entity.action.create"></span>
+                </button>
+            </div>
+        </div>
+    </div>
+    <br/>
+    <div class="panel panel-default">
+        <div class="panel-body">
+            <h3 data-translate="adqApp.requirement.filter.header">Filters find</h3>
+            <br>
+            <form name="formFilter" id="formFilter">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="alerts" rol="alerts" >
+                            <div ng-repeat="alert in vm.alerts" ng-class="[alert.position, {'toast': alert.toast}]">
+                                <uib-alert ng-cloak="" type="{{alert.type}}" close="alert.close(vm.alerts)">
+                                    <p ng-bind-html="alert.msg">{{alert.params}}</p>
+                                </uib-alert>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-xs-12 col-sm-6 col-md-2">
+                        <label for="field_folio" data-translate="adqApp.requirement.folio">Folio</label>
+                        <input type="text" id="field_folio" class="form-control" ng-model="vm.folio">
+                    </div>
+                    <div class="form-group col-xs-12 col-sm-6 col-md-2">
+                        <label data-translate="adqApp.requirement.agreement" for="field_agreementType">Agreement Type</label>
+                        <select class="form-control" id="field_agreementType" name="agreementType" ng-model="vm.agreementType"
+                            ng-options="agreementType as agreementType.name for agreementType in vm.agreementTypes track by agreementType.id">
+                        </select>
+                    </div>
+                    <div class="form-group col-xs-12 col-sm-6 col-md-2">
+                        <label data-translate="adqApp.requirement.process" for="field_procedure">Process</label>
+                        <select class="form-control" id="field_procedure" name="procedure" ng-model="vm.procedure"
+                            ng-options="process as process.name for process in vm.procedures track by process.id" >
+                        </select>
+                    </div>
+                    <div class="form-group col-xs-12 col-sm-6 col-md-3" ng-class="vm.isInvalidDate ? 'has-error' : ''">
+                        <label class="control-label" data-translate="adqApp.requirement.filter.initialDateElaboration" for="field_dateInitialElaboration">Date Required</label>
+                        <div class="input-group">
+                            <input id="field_dateInitialElaboration" type="text" class="form-control"
+                               name="dateInitialElaboration" uib-datepicker-popup="{{'dd/MM/yyyy'}}"
+                               ng-model="vm.dateInitialElaboration" is-open="vm.datePickerOpenStatus.dateInitialElaboration"/>
+                            <span class="input-group-btn">
+                                <button type="button" ng-class="'btn ' + (vm.isInvalidDate ? 'btn-danger' : 'btn-default')"
+                                    ng-click="vm.openCalendar('dateInitialElaboration')" >
+                                    <i class="glyphicon glyphicon-calendar"></i>
+                                </button>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="form-group col-xs-12 col-sm-6 col-md-3" ng-class="vm.isInvalidDate ? 'has-error' : ''">
+                        <label class="control-label" data-translate="adqApp.requirement.filter.finalDateElaboration" for="field_dateFinalElaboration">Date Required</label>
+                        <div class="input-group">
+                            <input id="field_dateFinalElaboration" type="text" class="form-control"
+                               name="dateFinalElaboration" uib-datepicker-popup="{{'dd/MM/yyyy'}}"
+                               ng-model="vm.dateFinalElaboration" is-open="vm.datePickerOpenStatus.dateFinalElaboration"/>
+                            <span class="input-group-btn">
+                                <button type="button" ng-class="'btn ' + (vm.isInvalidDate ? 'btn-danger' : 'btn-default')"
+                                    ng-click="vm.openCalendar('dateFinalElaboration')" >
+                                    <i class="glyphicon glyphicon-calendar"></i>
+                                </button>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-12">
+                        <button type="submit" ng-click="vm.search()" class="btn btn-primary pull-right">
+                            <span class="glyphicon glyphicon-search"></span>&nbsp;
+                            <span data-translate="entity.action.find">Find</span>
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="table-responsive">
+        <table class="jh-table table table-striped">
+            <thead>
+                <tr jh-sort="vm.predicate" ascending="vm.reverse" callback="vm.transition()">
+                    <th jh-sort-by="folio"><span data-translate="adqApp.requirement.folio">Folio</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="agreement.name"><span data-translate="adqApp.requirement.agreement">Agreement</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="process.name"><span data-translate="adqApp.requirement.process">Process</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="dateElaboration"><span data-translate="adqApp.requirement.dateElaboration">Date Elaboration</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="descriptionService"><span data-translate="adqApp.requirement.descriptionService">Description Service</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="procedureNumberCompranet"><span data-translate="adqApp.requirement.procedureNumberCompranet">Procedure Number Compranet</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="department.name"><span data-translate="adqApp.requirement.department">Department</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="unitBusiness.name"><span data-translate="adqApp.requirement.businessUnit">Business Unit</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th jh-sort-by="status.name"><span data-translate="adqApp.requirement.status">Status</span> <span class="glyphicon glyphicon-sort"></span></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="requirement in vm.requirements track by requirement.id">
+                    <td>{{requirement.folio}}</td>
+                    <td>{{requirement.agreement.name}}</td>
+                    <td>{{requirement.process.name}}</td>
+                    <td>{{requirement.dateElaboration |  date: 'dd/MM/yyyy'}}</td>
+                    <td>{{requirement.descriptionService}}</td>
+                    <td>{{requirement.procedureNumberCompranet}}</td>
+                    <td>{{requirement.department.name}}</td>
+                    <td>{{requirement.unitBusiness.name}}</td>
+                    <td>{{requirement.status.name}}</td>
+                    <td class="text-right">
+                        <div class="btn-group flex-btn-group-container">
+                            <button type="submit"
+                                    ui-sref="requirement.edit({id:requirement.id})"
+                                    class="btn btn-primary btn-sm"
+                            uib-tooltip="{{'entity.action.edit' | translate}}">
+                                <span class="glyphicon glyphicon-pencil"></span>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="text-center">
+        <jhi-item-count page="vm.page" total="vm.queryCount" items-per-page="vm.itemsPerPage"></jhi-item-count>
+    </div>
+    <uib-pager total-items="vm.totalItems" ng-model="vm.page" ng-change="vm.transition()"></uib-pager>
+</div>

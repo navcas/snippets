@@ -1,0 +1,32 @@
+<form name="cancelForm" ng-submit="vm.confirmSentTo()">
+    <div class="modal-header inverse">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
+                ng-click="vm.clear()">&times;</button>
+        <h4 class="modal-title" ng-if="vm.isUserApplicant" data-translate="adqApp.requirement.sentTo.admin.confirm.header">Confirm sent to Review operation</h4>
+        <h4 class="modal-title" ng-if="vm.isUserAdmin" data-translate="adqApp.requirement.sentTo.headDepartment.confirm.header">Confirm assign to Head Department</h4>
+        <h4 class="modal-title" ng-if="vm.isUserHeadDepartment" data-translate="adqApp.requirement.sentTo.reviewer.confirm.header">Confirm assign to Reviewer</h4>
+    </div>
+    <div class="modal-body">
+        <jhi-alert-error></jhi-alert-error>
+        <p ng-if="vm.isUserApplicant" data-translate="adqApp.requirement.sentTo.admin.confirm.message"
+           translate-values="{fullName: '{{vm.fullName}}'}">
+            Are you sure you want to sent this Requirement to Review with the Admi?
+        </p>
+        <p ng-if="vm.isUserAdmin" data-translate="adqApp.requirement.sentTo.headDepartment.confirm.message"
+           translate-values="{fullName: '{{vm.fullName}}'}">
+            Are you sure you want to assign this Requirement to the Head Department?
+        </p>
+        <p ng-if="vm.isUserHeadDepartment" data-translate="adqApp.requirement.sentTo.reviewer.confirm.message"
+           translate-values="{fullName: '{{vm.fullName}}'}">
+            Are you sure you want to assign this Requirement to the Reviewer?
+        </p>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="vm.clear()">
+            <span class="glyphicon glyphicon-ban-circle"></span>&nbsp;<span data-translate="entity.action.cancel">Cancel</span>
+        </button>
+        <button type="submit" ng-disabled="cancelForm.$invalid" class="btn btn-primary">
+            <span class="glyphicon glyphicon-check"></span>&nbsp;<span data-translate="entity.action.accept">Accept</span>
+        </button>
+    </div>
+</form>

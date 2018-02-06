@@ -1,0 +1,91 @@
+
+<div>
+    <h2><span data-translate="adqApp.requirement.detail.title">Requirement</span> {{vm.requirement.id}}</h2>
+    <hr>
+    <jhi-alert-error></jhi-alert-error>
+    <dl class="dl-horizontal jh-entity-details">
+        <dt><span data-translate="adqApp.requirement.businessUnit">Business Unit</span></dt>
+        <dd>
+            <span>{{vm.requirement.businessUnit}}</span>
+        </dd>
+        <dt><span data-translate="adqApp.requirement.folio">Folio</span></dt>
+        <dd>
+            <span>{{vm.requirement.folio}}</span>
+        </dd>
+        <dt><span data-translate="adqApp.requirement.dateInitialElaboration">Date Elaboration</span></dt>
+        <dd>
+            <span>{{vm.requirement.dateInitialElaboration | date:'mediumDate'}}</span>
+        </dd>
+        <dt><span data-translate="adqApp.requirement.idRequest">Id Request</span></dt>
+        <dd>
+            <span>{{vm.requirement.idRequest}}</span>
+        </dd>
+        <dt><span data-translate="adqApp.requirement.dateRequired">Date Required</span></dt>
+        <dd>
+            <span>{{vm.requirement.dateRequired | date:'mediumDate'}}</span>
+        </dd>
+        <dt><span data-translate="adqApp.requirement.folioReference">Folio Reference</span></dt>
+        <dd>
+            <span>{{vm.requirement.folioReference}}</span>
+        </dd>
+        <dt><span data-translate="adqApp.requirement.descriptionService">Description Service</span></dt>
+        <dd>
+            <span>{{vm.requirement.descriptionService}}</span>
+        </dd>
+        <dt><span data-translate="adqApp.requirement.procedureNumberCompranet">Procedure Number Compranet</span></dt>
+        <dd>
+            <span>{{vm.requirement.procedureNumberCompranet}}</span>
+        </dd>
+        <dt><span data-translate="adqApp.requirement.lastModified">Last Modified</span></dt>
+        <dd>
+            <span>{{vm.requirement.lastModified | date:'medium'}}</span>
+        </dd>
+        <dt><span data-translate="adqApp.requirement.originalNumberFolio">Original Number Folio</span></dt>
+        <dd>
+            <span>{{vm.requirement.originalNumberFolio}}</span>
+        </dd>
+        <dt><span data-translate="adqApp.requirement.agreement">Agreement</span></dt>
+        <dd>
+            <a ui-sref="agreement-type-detail({id:vm.requirement.agreement.id})">{{vm.requirement.agreement.id}}</a>
+        </dd>
+        <dt><span data-translate="adqApp.requirement.department">Department</span></dt>
+        <dd>
+            <a ui-sref="department-detail({id:vm.requirement.department.id})">{{vm.requirement.department.id}}</a>
+        </dd>
+        <dt><span data-translate="adqApp.requirement.status">Status</span></dt>
+        <dd>
+            <a ui-sref="status-detail({id:vm.requirement.status.id})">{{vm.requirement.status.id}}</a>
+        </dd>
+        <dt><span data-translate="adqApp.requirement.process">Process</span></dt>
+        <dd>
+            <a ui-sref="process-detail({id:vm.requirement.process.id})">{{vm.requirement.process.id}}</a>
+        </dd>
+        <dt><span data-translate="adqApp.requirement.applicableArticle">Applicable Article</span></dt>
+        <dd>
+            <a ui-sref="applicable-article-detail({id:vm.requirement.applicableArticle.id})">{{vm.requirement.applicableArticle.name}}</a>
+        </dd>
+        <dt><span data-translate="adqApp.requirement.requirementData">Requirement Data</span></dt>
+        <dd>
+            <a ui-sref="requirement-dt-detail({id:vm.requirement.requirementData.id})">{{vm.requirement.requirementData.id}}</a>
+        </dd>
+        <dt><span data-translate="adqApp.requirement.requirementDetail">Requirement Detail</span></dt>
+        <dd>
+            <a ui-sref="requirement-de-detail({id:vm.requirement.requirementDetail.id})">{{vm.requirement.requirementDetail.id}}</a>
+        </dd>
+        <dt><span data-translate="adqApp.requirement.agreementModificationType">Agreement Modification Type</span></dt>
+        <dd>
+            <a ui-sref="agre-modi-type-detail({id:vm.requirement.agreementModificationType.id})">{{vm.requirement.agreementModificationType.name}}</a>
+        </dd>
+    </dl>
+
+    <button type="submit"
+            ui-sref="{{ vm.previousState }}"
+            class="btn btn-info">
+        <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;<span data-translate="entity.action.back"> Back</span>
+    </button>
+
+    <button type="button" ui-sref="requirement-detail.edit({id:vm.requirement.id})" class="btn btn-primary">
+        <span class="glyphicon glyphicon-pencil"></span>
+        <span class="hidden-sm-down" data-translate="entity.action.edit"> Edit</span>
+    </button>
+</div>

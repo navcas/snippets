@@ -1,0 +1,1402 @@
+<form name="editForm" role="form" id="editForm" novalidate>
+    <jhi-alert-error></jhi-alert-error>
+    <uib-tabset active="activeForm" id="activeForm">
+        <div class="alerts alert-danger" rol="alerts" id="generalErrors" style="padding-bottom: 20px;padding-top: 10px;" ng-if="vm.alertsStaticGeneral.length > 0">
+            <ul ng-repeat="form in vm.alertsStaticGeneral">
+                <li style="list-style: none;padding-top:10px;padding-bottom: 10px;" id="{{form.name}}">
+                    <span translate-values="{tab: '{{form.header}}'}" ng-bind-html="adqApp.requirement.validation.tab"
+                          data-translate="adqApp.requirement.validation.tab">
+                    </span>
+                </li>
+                <li style="list-style: none;">
+                    <ul>
+                        <li ng-repeat="inputEr in form.inputs" id="{{inputEr.name}}">
+                            <span translate-values="{field: '{{inputEr.header}}'}"
+                                  ng-bind-html="adqApp.requirement.validation.required"
+                                  data-translate="adqApp.requirement.validation.required">
+                            </span>
+                        </li>
+                        <li ng-repeat="documentEr in form.documents" id="{{documentEr.name}}">
+                            <span translate-values="{document: '{{documentEr.header}}'}"
+                                  ng-bind-html="adqApp.requirement.validation.documentRequired"
+                                  data-translate="adqApp.requirement.validation.documentRequired">
+                            </span>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+        <div class="alerts" rol="alerts" >
+            <div ng-repeat="alert in vm.alertsGeneral" ng-class="[alert.position, {'toast': alert.toast}]">
+                <uib-alert ng-cloak="" type="{{alert.type}}" close="alert.close(vm.alertsGeneral)">
+                    <p ng-bind-html="alert.msg">{{alert.params}}</p>
+                </uib-alert>
+            </div>
+        </div>
+        <uib-tab index="0" id="tabRequirement">
+            <uib-tab-heading>
+                <span data-translate="adqApp.requirement.tabs.requirement">Requirement</span>
+            </uib-tab-heading>
+            <ng-form name="requirementForm" id="requirementForm">
+                <div class="row">
+                    <div class="form-group col-md-3">
+                        <label class="control-label" data-translate="adqApp.requirement.businessUnit"
+                               for="field_businessUnit">Business Unit</label>
+                        <input type="text" class="form-control" name="businessUnit" id="field_businessUnit"
+                               ng-model="vm.requirement.unitBusiness.name" ng-readonly="true" ng-disabled="true">
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label class="control-label" data-translate="adqApp.requirement.folio" for="field_folio">Folio</label>
+                        <input type="text" class="form-control" name="folio" id="field_folio"
+                               ng-model="vm.requirement.folio" ng-readonly="true" ng-disabled="true"/>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label class="control-label" data-translate="adqApp.requirement.dateElaboration" for="field_dateElaboration">Date Elaboration</label>
+                        <input id="field_dateElaboration" type="text" class="form-control" name="field_dateElaboration"
+                               ng-model="vm.requirement.dateElaboration" uib-datepicker-popup="{{'dd/MM/yyyy'}}"
+                                   ng-disabled="true" ng-readonly="true"/>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label data-translate="adqApp.requirement.status" for="field_status">Status</label>
+                        <input class="form-control" type="text" id="field_status" name="status"
+                               ng-model="vm.requirement.status.name" ng-readonly="true" ng-disabled="true">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-md-6">
+                        <label data-translate="adqApp.requirement.user" for="field_userApplicant">Status</label>
+                        <input class="form-control" type="text" id="field_userApplicant" name="field_userApplicant"
+                               ng-model="vm.fullNameUserApplicant" ng-readonly="true" ng-disabled="true">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-md-6">
+                        <label data-translate="adqApp.requirement.agreement" for="field_agreement">Agreement</label>
+                        <select class="form-control" id="field_agreement" name="agreement" ng-model="vm.requirement.agreement"
+                                ng-options="agreementType as agreementType.name for agreementType in vm.agreementtypes track by agreementType.id"
+                                required ng-change="vm.selectAgreementType()">
+                            <option value=""></option>
+                        </select>
+                        <div ng-show="requirementForm.agreement.$invalid">
+                            <p class="help-block"
+                               ng-show="requirementForm.agreement.$error.required" data-translate="entity.validation.required">
+                                This field is required.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="form-group col-md-3" ng-if="vm.isAgreementModification || vm.isAgreementAdendum">
+                        <label class="control-label" data-translate="adqApp.requirement.originalNumberFolio" for="field_originalNumberFolio">Original Number Folio</label>
+                        <input type="text" class="form-control" name="originalNumberFolio" id="field_originalNumberFolio"
+                               ng-model="vm.requirement.originalNumberFolio" required valid-folio-original
+                               ng-model-options="{updateOn: 'blur', debounce: {blur: 0}}" />
+                        <div ng-show="requirementForm.originalNumberFolio.$invalid">
+                            <p class="help-block"
+                               ng-show="requirementForm.originalNumberFolio.$error.required" data-translate="entity.validation.required">
+                                This field is required.
+                            </p>
+                            <p class="help-block"
+                               ng-show="requirementForm.originalNumberFolio.$error.invalidFolio"
+                               data-translate="adqApp.requirement.validation.invalidFolioOriginal">
+                                This folio is not valid!
+                            </p>
+                        </div>
+                    </div>
+                    <div class="form-group col-md-3" ng-if="vm.isAgreementAdendum">
+                        <label data-translate="adqApp.requirement.agreementModificationType" for="field_agreementModificationType">Agreement Modification Type</label>
+                        <select class="form-control" id="field_agreementModificationType" name="agreementModificationType"
+                            ng-model="vm.requirement.agreementModificationType"
+                            ng-options="agreModiType as agreModiType.name for agreModiType in vm.agreementModificationTypes track by agreModiType.id"
+                            required>
+                            <option value=""></option>
+                        </select>
+                        <div ng-show="requirementForm.agreementModificationType.$invalid">
+                            <p class="help-block"
+                               ng-show="requirementForm.agreementModificationType.$error.required" data-translate="entity.validation.required">
+                                This field is required.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-md-6">
+                        <label data-translate="adqApp.requirement.process" for="field_process">Process</label>
+                        <select class="form-control" id="field_process" name="process" ng-model="vm.requirement.process"
+                                ng-options="process as process.name for process in vm.processes track by process.id" required>
+                            <option value=""></option>
+                        </select>
+                        <div ng-show="requirementForm.process.$invalid">
+                            <p class="help-block"
+                               ng-show="requirementForm.process.$error.required" data-translate="entity.validation.required">
+                                This field is required.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label class="control-label" data-translate="adqApp.requirement.idRequest" for="field_idRequest">Id Request</label>
+                        <input type="text" class="form-control" name="idRequest" id="field_idRequest"
+                               ng-model="vm.requirement.idRequest"/>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-md-6">
+                        <label class="control-label" data-translate="adqApp.requirement.folioReference" for="field_folioReference">Folio Reference</label>
+                        <input type="text" class="form-control" name="folioReference" id="field_folioReference"
+                               ng-model="vm.requirement.folioReference"/>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label class="control-label" data-translate="adqApp.requirement.procedureNumberCompranet" for="field_procedureNumberCompranet">Procedure Number Compranet</label>
+                        <input type="text" class="form-control" name="procedureNumberCompranet" id="field_procedureNumberCompranet"
+                               ng-model="vm.requirement.procedureNumberCompranet" />
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-md-6">
+                        <label class="control-label" data-translate="adqApp.requirement.descriptionService" for="field_descriptionService">Description Service</label>
+                        <input type="text" class="form-control" name="descriptionService" id="field_descriptionService"
+                               ng-model="vm.requirement.descriptionService" required/>
+                        <div ng-show="requirementForm.descriptionService.$invalid">
+                            <p class="help-block"
+                               ng-show="requirementForm.descriptionService.$error.required" data-translate="entity.validation.required">
+                                This field is required.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label class="control-label" data-translate="adqApp.requirement.dateRequired" for="field_dateRequired">Date Required</label>
+                        <div class="input-group">
+                            <input id="field_dateRequired" type="text" class="form-control" name="dateRequired" uib-datepicker-popup="{{'dd/MM/yyyy'}}" ng-model="vm.requirement.dateRequired" is-open="vm.datePickerOpenStatus.dateRequired"
+                                   required/>
+                            <span class="input-group-btn">
+                                <button id="btn_dateRequired" type="button" class="btn btn-default" ng-click="vm.openCalendar('dateRequired')" ><i class="glyphicon glyphicon-calendar"></i></button>
+                            </span>
+                        </div>
+                        <div ng-show="requirementForm.dateRequired.$invalid">
+                            <p class="help-block"
+                               ng-show="requirementForm.dateRequired.$error.required" data-translate="entity.validation.required">
+                                This field is required.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-md-6">
+                        <label data-translate="adqApp.requirement.department" for="field_department">Department</label>
+                        <select class="form-control" id="field_department" name="department" ng-model="vm.requirement.department"
+                                ng-options="department as department.name for department in vm.departments track by department.id">
+                            <option value=""></option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row" ng-show="vm.requirement.id">
+                    <div class="form-group col-sm-12">
+                        <label data-translate="adqApp.requirement.comments" for="field_comment">Comentarios</label>
+                        <textarea class="form-control" name="comment" id="field_comment" ng-model="vm.comment"
+                               ng-required="vm.isCommentRequired" rows="4"/>
+                        <div ng-show="requirementForm.comment.$invalid && vm.isCommentRequired">
+                            <p class="help-block"
+                               ng-show="requirementForm.comment.$error.required" data-translate="entity.validation.required">
+                                This field is required.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </ng-form>
+        </uib-tab>
+        <uib-tab index="1" id="tabDocuments">
+            <uib-tab-heading>
+                <span data-translate="adqApp.requirement.tabs.documents.header">Documentos</span>
+            </uib-tab-heading>
+            <ng-form name="documentsForm" id="documentsForm">
+                <div class="row">
+                    <div class="form-group col-md-6">
+                        <label for="applicable_article" data-translate="adqApp.requirement.tabs.documents.applicableArticle">Applicable Article</label>
+                        <select class="form-control" id="applicable_article" name="applicable_article" ng-model="vm.requirement.applicableArticle"
+                                ng-options="aa as (aa.code + '-' + aa.name) for aa in vm.ApplicableArticles track by aa.id"
+                                required ng-change="vm.applicableArticleSelected()">
+                            <option value=""></option>
+                        </select>
+                        <div ng-show="documentsForm.applicable_article.$invalid">
+                            <p class="help-block" ng-show="documentsForm.applicable_article.$error.required"
+                               data-translate="entity.validation.required">
+                                This field is required.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="table-responsive">
+                        <table class="jh-table table table-striped">
+                            <thead>
+                                <tr>
+                                    <th><span data-translate="adqApp.requirement.tabs.documents.grid.document">Documento</span></th>
+                                    <!-- th><span data-translate="adqApp.requirement.tabs.documents.grid.isRequired">¿Es requerido?</span></th -->
+                                    <th><span data-translate="adqApp.requirement.tabs.documents.grid.files">Archivos</span></th>
+                                    <th><span></span></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="groupAA in vm.DocumentsToUpload track by groupAA.id" ng-if="groupAA.required || vm.hasFilesUploaded(groupAA)">
+                                    <td>{{groupAA.documentType.name}}</td>
+                                    <!-- td>
+                                        <span data-translate="adqApp.requirement.tabs.documents.grid.yes" ng-if="groupAA.required">Si</span>
+                                        <span data-translate="adqApp.requirement.tabs.documents.grid.no" ng-if="!groupAA.required">No</span>
+                                    </td -->
+                                    <td>
+                                        <div ng-repeat="item in vm.requisitionDocuments track by $index" ng-if="groupAA.documentType.id == item.documentType.id">
+                                            <a ng-click="vm.openFile(item)">{{item.name}}</a>
+                                            <i class="fa fa-trash" style="padding-left: 5px" aria-hidden="true" ng-click="vm.deleteUploadedFile($index, vm.requisitionDocuments)" ng-if="vm.isUserApplicant && item.approved !== true" uib-tooltip="{{'entity.action.delete' | translate}}"
+                                               tooltip-append-to-body="true" ></i>
+                                            <i class="fa fa-check" style="padding-left: 5px; color: #3c763d" aria-hidden="true" ng-click="vm.approveFile(item)" ng-if="item.approved === null && vm.isUserAdmin" uib-tooltip="{{'entity.action.approve' | translate}}"
+                                               tooltip-append-to-body="true"></i>
+                                            <i class="fa fa-close" style="padding-left: 5px; color: #aa0000" aria-hidden="true" ng-click="vm.rejectFile(item)" ng-if="item.approved === null && vm.isUserAdmin" uib-tooltip="{{'entity.action.reject' | translate}}"
+                                               tooltip-append-to-body="true"></i>
+                                            <i class="fa fa-check-square" style="padding-left: 5px; color: #3c763d" aria-hidden="true" ng-if="item.approved === true" uib-tooltip="{{'entity.status.approved' | translate}}" tooltip-append-to-body="true"></i>
+                                            <i class="fa fa-window-close" style="padding-left: 5px; color: #aa0000" aria-hidden="true" ng-if="item.approved === false" uib-tooltip="{{'entity.status.rejected' | translate}}" tooltip-append-to-body="true"></i>
+                                        </div>
+                                        <div ng-repeat="item in groupAA.files track by $index">
+                                            {{item.name}}
+                                            <i class="fa fa-trash" style="padding-left: 5px" aria-hidden="true" ng-click="vm.deleteTemporalFile($index, groupAA)" uib-tooltip="{{'entity.action.delete' | translate}}"
+                                               tooltip-append-to-body="true"></i>
+                                        </div>
+
+                                    </td>
+                                    <td>
+                                        <div class="btn btn-default" ng-readonly="vm.isBlock || !vm.isUserApplicant || vm.isFullBlock"
+                                             ng-disabled="vm.isBlock || !vm.isUserApplicant || vm.isFullBlock"
+                                             ngf-select="vm.upload($file, groupAA)"
+                                             ngf-pattern="',.jpg,.pdf,.png,.doc,.xls,.csv,.jpeg'"
+                                             ngf-accept="'image/*,application/pdf,application/doc,application/docx,application/msword'"><span data-translate="adqApp.requirement.tabs.documents.grid.uploadFile">Subir Archivo</span></div></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </ng-form>
+        </uib-tab>
+        <uib-tab index="2" id="tabRequirementData">
+            <uib-tab-heading>
+                <span data-translate="adqApp.requirement.tabs.data.header">Requirement Data</span>
+            </uib-tab-heading>
+            <ng-form name="requirementDataForm" id="requirementDataForm">
+                <div class="row">
+                    <div class="form-group col-xs-12 col-sm-6 col-md-4 col-lg-3">
+                        <input type="checkbox" name="advance" id="field_advance" ng-model="vm.requirement.requirementData.advance"/>
+                        <label class="control-label" data-translate="adqApp.requirement.data.advance" for="field_advance">Advance</label>
+                    </div>
+                    <div class="form-group col-xs-12 col-sm-6 col-md-4 col-lg-3">
+                        <input type="checkbox" name="healthRegistration" id="field_healthRegistration"
+                               ng-model="vm.requirement.requirementData.healthRegistration"/>
+                        <label class="control-label" data-translate="adqApp.requirement.data.healthRegistration" for="field_healthRegistration">Health Registration</label>
+                    </div>
+                    <div class="form-group col-xs-12 col-sm-6 col-md-4 col-lg-3">
+                        <input type="checkbox" name="training" id="field_training" ng-model="vm.requirement.requirementData.training"/>
+                        <label class="control-label" data-translate="adqApp.requirement.data.training" for="field_training">Training</label>
+                    </div>
+                    <div class="form-group col-xs-12 col-sm-6 col-md-4 col-lg-3">
+                        <input type="checkbox" name="budgetAuthorization" id="field_budgetAuthorization"
+                               ng-model="vm.requirement.requirementData.budgetAuthorization"/>
+                        <label class="control-label" data-translate="adqApp.requirement.data.budgetAuthorization" for="field_budgetAuthorization">Budget Authorization</label>
+                    </div>
+                    <div class="form-group col-xs-12 col-sm-6 col-md-4 col-lg-3">
+                        <input type="checkbox" name="storageExisting" id="field_storageExisting"
+                               ng-model="vm.requirement.requirementData.storageExisting"/>
+                        <label class="control-label" data-translate="adqApp.requirement.data.storageExisting" for="field_storageExisting">Storage Existing</label>
+                    </div>
+                </div>
+                <div class="row" >
+                    <div class="panel panel-default col-md-6">
+                        <div class="panel-body">
+                            <div class="form-group col-md-6">
+                                <input type="checkbox" name="conventionalPenalties" id="field_conventionalPenalties"
+                                       ng-model="vm.requirement.requirementData.conventionalPenalties"/>
+                                <label class="control-label" data-translate="adqApp.requirement.data.conventionalPenalties"
+                                       for="field_conventionalPenalties">Conventional Penalties</label>
+                            </div>
+                            <div class="form-group col-md-6">
+                                 <label class="control-label" data-translate="adqApp.requirement.data.percentageConventionalPenalty" for="field_percentageConventionalPenalty">Percentage Conventional Penalty</label>
+                                <input type="text" class="form-control" name="percentageConventionalPenalty" id="field_percentageConventionalPenalty"
+                                       ng-model="vm.requirement.requirementData.percentageConventionalPenalty" int-box max-percentage="100" maxlength="3"/>
+                                <div ng-show="requirementDataForm.percentageConventionalPenalty.$invalid">
+                                    <p class="help-block" ng-show="requirementDataForm.percentageConventionalPenalty.$error.maxPercentage"
+                                       data-translate="adqApp.requirement.validation.maxPercentage">
+                                        The percentage should have value between 0 and 100.
+                                    </p>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label class="control-label" data-translate="adqApp.requirement.data.testMethod" for="field_testMethod">Test Method</label>
+                        <input type="text" class="form-control" name="testMethod" id="field_testMethod"
+                               ng-model="vm.requirement.requirementData.testMethod" />
+                    </div>
+                </div>
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="alerts" rol="alerts" >
+                                <div ng-repeat="alert in vm.alertsGuaranteeTypeDetail" ng-class="[alert.position, {'toast': alert.toast}]">
+                                    <uib-alert ng-cloak="" type="{{alert.type}}" close="alert.close(vm.alertsGuaranteeTypeDetail)">
+                                        <p ng-bind-html="alert.msg">{{alert.params}}</p>
+                                    </uib-alert>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group col-md-6">
+                                <label data-translate="adqApp.requirement.data.guaranteeType" for="field_guaranteeType">Guarantee Type</label>
+                                <select class="form-control" id="field_guaranteeType" name="guaranteeType"
+                                        ng-model="vm.guaranteeSelected"
+                                        ng-options="guaranteeType as guaranteeType.name for guaranteeType in vm.guaranteeTypes track by guaranteeType.id">
+                                </select>
+                                <button type="button" id="btn_addGuaranteeTypeDetail" ng-click="vm.addGuaranteeTypeDetail()" class="btn btn-primary"
+                                        ng-if="vm.requirement.requirementData.guaranteeTypeDetails.length < 3 || vm.guaranteeTypes.length === 0"
+                                        uib-tooltip="{{'entity.action.add' | translate}}" ng-disabled="vm.isBlock || vm.isFullBlock">
+                                    <span class="glyphicon glyphicon-plus"></span>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="table-responsive col-sm-12" ng-if="vm.requirement.requirementData.guaranteeTypeDetails.length > 0">
+                            <table class="table table-striped table-bordered">
+                                <tr>
+                                    <th><span data-translate="adqApp.requirement.data.guaranteeTypeDetail.guarantee.name">GuaranteeType</span></th>
+                                    <th><span data-translate="adqApp.requirement.data.guaranteeTypeDetail.percentage">Percentage</span></th>
+                                    <th><span data-translate="adqApp.requirement.data.guaranteeTypeDetail.detail">Details</span></th>
+                                </tr>
+                                <tr ng-repeat="guaranteeTypeDetail in vm.requirement.requirementData.guaranteeTypeDetails">
+                                    <td>{{guaranteeTypeDetail.guaranteeType.name}}</td>
+                                    <td>
+                                        <ng-form name="guaranteeForm">
+                                            <div ng-class="guaranteeForm.percentage.$invalid ? 'has-error' : ''">
+                                                <input type="text" class="form-control" ng-model="guaranteeTypeDetail.percentage"
+                                                       name="percentage" int-box required max-percentage="100" maxlength="3"
+                                                       ng-disabled="vm.isBlock || vm.isFullBlock" ng-readonly="vm.isBlock || vm.isFullBlock"/>
+                                                <div ng-show="guaranteeForm.percentage.$invalid">
+                                                    <p class="help-block"
+                                                       ng-show="guaranteeForm.percentage.$error.required"
+                                                       data-translate="entity.validation.required">
+                                                        This field is required.
+                                                    </p>
+                                                    <p class="help-block" ng-show="guaranteeForm.percentage.$error.maxPercentage"
+                                                       data-translate="adqApp.requirement.validation.maxPercentage">
+                                                        The percentage should have value between 0 and 100.
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </ng-form>
+                                    </td>
+                                    <td>
+                                        <button type="button" class="btn btn-danger" ng-click="vm.removeGuaranteeTypeDetail(guaranteeTypeDetail)"
+                                                uib-tooltip="{{'entity.action.delete' | translate}}" ng-readonly="vm.isBlock || vm.isFullBlock"
+                                                ng-disabled="vm.isBlock || vm.isFullBlock">
+                                            <span class="glyphicon glyphicon-remove"></span>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <ng-form name="multiyearForm">
+                            <div class="alerts" rol="alerts" >
+                                <div ng-repeat="alert in vm.alertsMultiyearDetail" ng-class="[alert.position, {'toast': alert.toast}]">
+                                    <uib-alert ng-cloak="" type="{{alert.type}}" close="alert.close(vm.alertsMultiyearDetail)">
+                                        <p ng-bind-html="alert.msg">{{alert.params}}</p>
+                                    </uib-alert>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group col-sm-6">
+                                    <input type="checkbox" name="multiyear" id="field_multiyear"
+                                           ng-model="vm.isCheckedMultiyear" ng-checked="vm.checkMultiyear()" />
+                                    <label class="control-label" data-translate="adqApp.requirement.data.multiyear" for="field_multiyear">Multiyear</label>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group col-sm-6" ng-if="vm.isCheckedMultiyear">
+                                    <label class="control-label" data-translate="adqApp.requirement.data.months" for="field_months">Months</label>
+                                    <input type="text" class="form-control" name="months" id="field_months"
+                                           ng-model="vm.requirement.requirementData.months" int-box required maxlength="3"/>
+                                    <div ng-show="multiyearForm.months.$invalid">
+                                        <p class="help-block"
+                                           ng-show="multiyearForm.months.$error.required"
+                                           data-translate="entity.validation.required">
+                                            This field is required.
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="form-group col-sm-12 col-md-6" ng-if="vm.isCheckedMultiyear">
+                                    <label data-translate="adqApp.requirement.data.contractType" for="field_contractType">Contract Type</label>
+                                    <select class="form-control" id="field_contractType" name="contractType"
+                                        ng-model="vm.contractTypeSelected" ng-change="vm.selectContractType()"
+                                        ng-options="contractType as contractType.name for contractType in vm.contractTypes track by contractType.id"
+                                        required>
+                                        <option value=""></option>
+                                    </select>
+                                    <div ng-show="multiyearForm.contractType.$invalid">
+                                        <p class="help-block"
+                                           ng-show="multiyearForm.contractType.$error.required"
+                                           data-translate="entity.validation.required">
+                                            This field is required.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            <ng-form name="multiyearDetailForm" ng-if="vm.isCheckedMultiyear && vm.contractTypeSelected.id && (!vm.isBlock && !vm.isFullBlock)" id="multiyearDetailForm" isolate-form>
+                                <div class="row">
+                                    <div class="form-group col-md-6">
+                                        <label class="control-label" data-translate="adqApp.requirement.data.multiyearDetail.budget" for="field_budget">Budget</label>
+                                        <input type="text" class="form-control" name="budget" id="field_budget"
+                                               ng-model="vm.multiyearDetail.budget" required int-box/>
+                                        <div ng-show="multiyearDetailForm.budget.$invalid">
+                                            <p class="help-block"
+                                               ng-show="multiyearDetailForm.budget.$error.required"
+                                               data-translate="entity.validation.required">
+                                                This field is required.
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label class="control-label" data-translate="adqApp.requirement.data.multiyearDetail.fiscalYear" for="field_fiscalYear">Fiscal Year</label>
+                                        <input type="text" class="form-control" name="fiscalYear" id="field_fiscalYear"
+                                               ng-model="vm.multiyearDetail.fiscalYear" required int-box maxlength="4"/>
+                                        <div ng-show="multiyearDetailForm.fiscalYear.$invalid">
+                                            <p class="help-block"
+                                               ng-show="multiyearDetailForm.fiscalYear.$error.required"
+                                               data-translate="entity.validation.required">
+                                                This field is required.
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row" ng-if="vm.isContractTypeClose">
+                                    <div class="form-group col-md-6">
+                                        <label class="control-label" data-translate="adqApp.requirement.data.multiyearDetail.totalAmount" for="field_totalAmount">Total Amount</label>
+                                        <input type="text" class="form-control" name="totalAmount" id="field_totalAmount"
+                                               ng-model="vm.multiyearDetail.totalAmount" required decimal-box/>
+                                        <div ng-show="multiyearDetailForm.totalAmount.$invalid">
+                                            <p class="help-block"
+                                               ng-show="multiyearDetailForm.totalAmount.$error.required"
+                                               data-translate="entity.validation.required">
+                                                This field is required.
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row" ng-if="!vm.isContractTypeClose">
+                                    <div class="form-group col-md-6">
+                                        <label class="control-label" data-translate="adqApp.requirement.data.multiyearDetail.minAmount" for="field_minAmount">Min Amount</label>
+                                        <input type="text" class="form-control" name="minAmount" id="field_minAmount"
+                                               ng-model="vm.multiyearDetail.minAmount" required decimal-box/>
+                                        <div ng-show="multiyearDetailForm.minAmount.$invalid">
+                                            <p class="help-block"
+                                               ng-show="multiyearDetailForm.minAmount.$error.required"
+                                               data-translate="entity.validation.required">
+                                                This field is required.
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label class="control-label" data-translate="adqApp.requirement.data.multiyearDetail.maxAmount" for="field_maxAmount">Max Amount</label>
+                                        <input type="text" class="form-control" name="maxAmount" id="field_maxAmount"
+                                               ng-model="vm.multiyearDetail.maxAmount" required decimal-box/>
+                                        <div ng-show="multiyearDetailForm.maxAmount.$invalid">
+                                            <p class="help-block"
+                                               ng-show="multiyearDetailForm.maxAmount.$error.required"
+                                               data-translate="entity.validation.required">
+                                                This field is required.
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group col-xs-12">
+                                        <button type="button" class="btn btn-primary" ng-if="vm.isCheckedMultiyear && vm.contractTypeSelected.id"
+                                                ng-disabled="multiyearForm.$invalid || vm.isBlock || vm.isFullBlock"
+                                                ng-readonly="vm.isBlock || vm.isFullBlock" ng-click="vm.addMultiyearDetail()"
+                                                uib-tooltip="{{'entity.action.add' | translate}}">
+                                            <span class="glyphicon glyphicon-plus"></span>
+                                        </button>
+                                        <button type="button" id="btn_cancelUpdateMultiyearDetail" class="btn btn-danger" ng-click="vm.cancelUpdateMultiyearDetail()"
+                                                 ng-if="vm.isCheckedMultiyear && vm.contractTypeSelected.id && vm.isUpdatedMultiyearDetail"
+                                                 uib-tooltip="{{'entity.action.cancelUpdate' | translate}}" >
+                                                <i class="fa fa-undo fa-lg"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </ng-form>
+                        </ng-form>
+                        <div>
+                            <div class="col-sm-12 table-responsive" ng-if="vm.isCheckedMultiyear && vm.contractTypeSelected.id">
+                                <table class="table table-striped table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th><span data-translate="adqApp.requirement.data.multiyearDetail.budget">Budget</span></th>
+                                            <th><span data-translate="adqApp.requirement.data.multiyearDetail.fiscalYear">Fiscal Year</span></th>
+                                            <th ng-if="vm.isContractTypeClose">
+                                                <span data-translate="adqApp.requirement.data.multiyearDetail.totalAmount">Total Amount</span>
+                                            </th>
+                                            <th ng-if="!vm.isContractTypeClose">
+                                                <span data-translate="adqApp.requirement.data.multiyearDetail.minAmount">Min Amount</span>
+                                            </th>
+                                            <th ng-if="!vm.isContractTypeClose">
+                                                <span data-translate="adqApp.requirement.data.multiyearDetail.maxAmount">Max Amount</span>
+                                            </th>
+                                            <th ng-if="!vm.isBlock && !vm.isFullBlock"><span data-translate="adqApp.requirement.data.multiyearDetail.detail">Details</span></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr ng-repeat="multiyearDetail  in vm.requirement.requirementData.multiyearDetails">
+                                            <td>{{multiyearDetail.budget}}</td>
+                                            <td>{{multiyearDetail.fiscalYear}}</td>
+                                            <td ng-if="vm.isContractTypeClose">{{multiyearDetail.totalAmount}}</td>
+                                            <td ng-if="!vm.isContractTypeClose">{{multiyearDetail.minAmount}}</td>
+                                            <td ng-if="!vm.isContractTypeClose">{{multiyearDetail.maxAmount}}</td>
+                                            <td ng-if="!vm.isBlock && !vm.isFullBlock">
+                                                <button type="button" class="btn btn-info" ng-click="vm.editMultiyearDetail(multiyearDetail, $index)"
+                                                uib-tooltip="{{'entity.action.edit' | translate}}">
+                                                    <span class="glyphicon glyphicon-edit"></span>
+                                                </button>
+                                                <button type="button" class="btn btn-danger" ng-click="vm.removeMultiyearDetail(multiyearDetail, $index)"
+                                                uib-tooltip="{{'entity.action.delete' | translate}}">
+                                                    <span class="glyphicon glyphicon-remove"></span>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <th>
+                                                <span ng-if="vm.isContractTypeClose" data-translate="adqApp.requirement.data.multiyearDetail.totalClose"></span>
+                                                <span ng-if="!vm.isContractTypeClose" data-translate="adqApp.requirement.data.multiyearDetail.totalOpen"></span>
+                                            </th>
+                                            <th></th>
+                                            <th ng-if="vm.isContractTypeClose">{{vm.totalAmount | decimal}}</th>
+                                            <th ng-if="!vm.isContractTypeClose">{{vm.totalMinAmount | decimal}}</th>
+                                            <th ng-if="!vm.isContractTypeClose">{{vm.totalMaxAmount | decimal}}</th>
+                                            <th ng-if="!vm.isBlock && !vm.isFullBlock"></th>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-xs-12">
+                        <label class="control-label" data-translate="adqApp.requirement.data.comments" for="field_comments">Comments</label>
+                        <textarea class="form-control" name="comments" id="field_comments"
+                               ng-model="vm.requirement.requirementData.comments" rows="4"/>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-xs-12">
+                        <label class="control-label" data-translate="adqApp.requirement.data.deliveryConditions" for="field_deliveryConditions">Delivery Conditions</label>
+                        <textarea class="form-control" name="deliveryConditions" id="field_deliveryConditions"
+                                  ng-model="vm.requirement.requirementData.deliveryConditions" rows="4" />
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-xs-12">
+                        <label class="control-label" data-translate="adqApp.requirement.data.deliveryPlace" for="field_deliveryPlace">Delivery Place</label>
+                        <textarea class="form-control" name="deliveryPlace" id="field_deliveryPlace"
+                                  ng-model="vm.requirement.requirementData.deliveryPlace" rows="4" />
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-xs-12">
+                        <label class="control-label" data-translate="adqApp.requirement.data.paymentConditions" for="field_paymentConditions">Payment Conditions</label>
+                        <textarea class="form-control" name="paymentConditions" id="field_paymentConditions"
+                               ng-model="vm.requirement.requirementData.paymentConditions" rows="4"/>
+                    </div>
+                </div>
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="form-group col-xs-12">
+                                <label class="control-label" data-translate="adqApp.requirement.data.requesterName" for="field_requesterName">Requester Name</label>
+                                <input type="text" class="form-control" name="requesterName" id="field_requesterName"
+                                       ng-model="vm.requirement.requirementData.requesterName" />
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group col-md-6">
+                                <label class="control-label" data-translate="adqApp.requirement.data.requesterPosition" for="field_requesterPosition">Requester Position</label>
+                                <input type="text" class="form-control" name="requesterPosition" id="field_requesterPosition"
+                                       ng-model="vm.requirement.requirementData.requesterPosition" />
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label class="control-label" data-translate="adqApp.requirement.data.requesterDepartment" for="field_requesterDepartment">Requester Department</label>
+                                <input type="text" class="form-control" name="requesterDepartment" id="field_requesterDepartment"
+                                          ng-model="vm.requirement.requirementData.requesterDepartment"/>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group col-xs-12">
+                                <label class="control-label" data-translate="adqApp.requirement.data.approverName" for="field_approverName">Approver Name</label>
+                                <input type="text" class="form-control" name="approverName" id="field_approverName"
+                                       ng-model="vm.requirement.requirementData.approverName" />
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group col-xs-12">
+                                <label class="control-label" data-translate="adqApp.requirement.data.aproverPosition" for="field_aproverPosition">Aprover Position</label>
+                                <textarea class="form-control" name="aproverPosition" id="field_aproverPosition"
+                                       ng-model="vm.requirement.requirementData.aproverPosition" rows="2"/>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group col-xs-12">
+                                <label class="control-label" data-translate="adqApp.requirement.data.firmsPosition" for="field_firmsPosition">Firms Position</label>
+                                <textarea class="form-control" name="firmsPosition" id="field_firmsPosition"
+                                       ng-model="vm.requirement.requirementData.firmsPosition" rows="4" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </ng-form>
+        </uib-tab>
+        <uib-tab index="3" id="tabRequirementDetail">
+            <uib-tab-heading>
+                <span data-translate="adqApp.requirement.tabs.detail.header">Requirement Detail</span>
+            </uib-tab-heading>
+            <ng-form name="requirementDetailForm" id="requirementDetailForm">
+                <div class="row" ng-if="vm.alertsRequirementDetail.length > 0">
+                    <div class="col-xs-12">
+                        <div class="alerts" rol="alerts" >
+                            <div ng-repeat="alert in vm.alertsRequirementDetail" ng-class="[alert.position, {'toast': alert.toast}]">
+                                <uib-alert ng-cloak="" type="{{alert.type}}" close="alert.close(vm.alertsRequirementDetail)">
+                                    <p ng-bind-html="alert.msg">{{alert.params}}</p>
+                                </uib-alert>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row" ng-if="vm.isAgreementModification">
+                    <div class="form-group col-xs-12" id="item_formalizeOrder">
+                        <label class="control-label" data-translate="adqApp.requirement.detail.reasonChange" for="field_reasonChange">Reason Change</label>
+                        <textarea type="text" class="form-control" name="reasonChange" id="field_reasonChange"
+                               ng-model="vm.requirement.requirementDetail.reasonChange" rows="3" required/>
+                        <div ng-show="requirementDetailForm.reasonChange.$invalid">
+                            <p class="help-block"
+                               ng-show="requirementDetailForm.reasonChange.$error.required" data-translate="entity.validation.required">
+                                This field is required.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="row" ng-if="vm.isRequirementAproved">
+                    <div class="form-group col-md-6">
+                        <input type="checkbox" name="formalizeOrder" id="field_formalizeOrder"
+                               ng-model="vm.requirement.requirementDetail.formalizeOrder"/>
+                        <label class="control-label" data-translate="adqApp.requirement.detail.formalizeOrder"
+                               for="field_formalizeOrder">Formalize Order</label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-md-6" id="item_documentType">
+                        <label data-translate="adqApp.requirement.detail.documentType" for="field_documentType">Document Type</label>
+                        <select class="form-control" id="field_documentType" name="documentType" ng-model="vm.requirement.requirementDetail.documentType"
+                                ng-options="documentType as documentType.name for documentType in vm.documentsTypeReqDet track by documentType.id"
+                                required>
+                            <option value=""></option>
+                        </select>
+                        <div ng-show="requirementDetailForm.documentType.$invalid">
+                            <p class="help-block"
+                               ng-show="requirementDetailForm.documentType.$error.required" data-translate="entity.validation.required">
+                                This field is required.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <div class="row">
+                            <label class="control-label" data-translate="adqApp.requirement.detail.document">Document</label>
+                        </div>
+                        <div class="row">
+                            <div ng-if="vm.hasDocumentContract && !vm.selectedContract">
+                                <a ng-click="vm.openContract()">{{vm.requirement.requirementDetail.documentName}}</a>
+                                <i class="fa fa-trash" style="padding-left: 5px" aria-hidden="true" ng-click="vm.deleteContract()"></i>
+                            </div>
+                            <div ng-if="vm.selectedContract">
+                                {{vm.requirement.requirementDetail.documentName}}
+                                <i class="fa fa-trash" style="padding-left: 5px" aria-hidden="true" ng-click="vm.deleteContract()"></i>
+                            </div>
+                            <div class="btn btn-default" ng-if="!vm.selectedContract && !vm.hasDocumentContract"
+                                 ng-disabled="vm.isUserApplicant || vm.isUserReviewer || vm.isFormalized || vm.isFullBlock"
+                                 ngf-select="vm.uploadContract($file)"
+                                 ngf-pattern="',.jpg,.pdf,.png,.doc,.xls,.csv,.jpeg'"
+                                 ngf-accept="'image/*,application/pdf,application/doc,application/docx,application/msword'"><span data-translate="adqApp.requirement.tabs.documents.grid.uploadFile">Subir Archivo</span></div>
+                        </div>
+
+
+                    </div>
+                </div>
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <ng-form name="formContractTypeTotals" id="formContractTypeTotals" isolate-form>
+                            <div class="row" ng-if="vm.alertsStaticContractTypeTotals.length > 0">
+                                <div class="col-xs-12">
+                                    <div class="alerts" rol="alerts">
+                                        <div ng-repeat="alert in vm.alertsStaticContractTypeTotals" ng-class="[alert.position, {'toast': alert.toast}]">
+                                            <uib-alert ng-cloak="" type="{{alert.type}}" >
+                                                <p ng-bind-html="alert.msg">{{alert.params}}</p>
+                                            </uib-alert>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row" ng-if="vm.alertsContractTypeTotals.length > 0">
+                                <div class="col-xs-12">
+                                    <div class="alerts" rol="alerts" >
+                                        <div ng-repeat="alert in vm.alertsContractTypeTotals" ng-class="[alert.position, {'toast': alert.toast}]">
+                                            <uib-alert ng-cloak="" type="{{alert.type}}" close="alert.close(vm.alertsContractTypeTotals)">
+                                                <p ng-bind-html="alert.msg">{{alert.params}}</p>
+                                            </uib-alert>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group col-md-6">
+                                    <label class="control-label" data-translate="adqApp.requirement.data.contractType" for="field_contractType_detail">Contract Type</label>
+                                    <input type="text" class="form-control" name="contractTypeDetail" id="field_contractType_detail"
+                                           ng-model="vm.requirement.requirementData.contractType.name" ng-disabled="true" ng-readonly="true">
+                                </div>
+                            </div>
+                            <div class="row" ng-if="vm.requirement.requirementData.contractType !== null && !vm.isContractTypeClose">
+                                <div class="form-group col-md-6" id="item_maxTotalAmount">
+                                    <label class="control-label" data-translate="adqApp.requirement.detail.maxTotalAmount" for="field_maxTotalAmount">Max Total Amount</label>
+                                    <input type="text" class="form-control" name="maxTotalAmount" id="field_maxTotalAmount"
+                                           ng-model="vm.requirement.requirementDetail.maxTotalAmount" decimal-box required />
+                                    <div ng-show="formContractTypeTotals.maxTotalAmount.$invalid">
+                                        <p class="help-block"
+                                           ng-show="formContractTypeTotals.maxTotalAmount.$error.required" data-translate="entity.validation.required">
+                                            This field is required.
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="form-group col-md-6" id="minTotalAmount" id="item_minTotalAmount">
+                                    <label class="control-label" data-translate="adqApp.requirement.detail.minTotalAmount" for="field_minTotalAmount">Min Total Amount</label>
+                                    <input type="text" class="form-control" name="minTotalAmount" id="field_minTotalAmount"
+                                           ng-model="vm.requirement.requirementDetail.minTotalAmount" decimal-box required />
+                                    <div ng-show="formContractTypeTotals.minTotalAmount.$invalid">
+                                        <p class="help-block"
+                                           ng-show="formContractTypeTotals.minTotalAmount.$error.required" data-translate="entity.validation.required">
+                                            This field is required.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row" ng-if="vm.requirement.requirementData.contractType !== null && vm.isContractTypeClose">
+                                <div class="form-group col-md-6" id="item_totalAmountReqDet">
+                                    <label class="control-label" data-translate="adqApp.requirement.detail.totalAmount" for="field_total_amount">Total Amount</label>
+                                    <input type="text" class="form-control" name="totalAmountReqDet" id="field_total_amount"
+                                           ng-model="vm.requirement.requirementDetail.totalAmount" decimal-box required />
+                                    <div ng-show="formContractTypeTotals.totalAmountReqDet.$invalid">
+                                        <p class="help-block"
+                                           ng-show="formContractTypeTotals.totalAmountReqDet.$error.required" data-translate="entity.validation.required">
+                                            This field is required.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </ng-form>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-md-3" id="item_paymentCondition">
+                        <label data-translate="adqApp.requirement.detail.paymentCondition" for="field_paymentCondition">Payment Condition</label>
+                        <select class="form-control" id="field_paymentCondition" name="paymentCondition"
+                                ng-model="vm.requirement.requirementDetail.paymentCondition"
+                                ng-options="paymentCondition as paymentCondition.name for paymentCondition in vm.paymentConditions track by paymentCondition.id"
+                                required>
+                            <option value=""></option>
+                        </select>
+                        <div ng-show="requirementDetailForm.paymentCondition.$invalid">
+                            <p class="help-block"
+                               ng-show="requirementDetailForm.paymentCondition.$error.required" data-translate="entity.validation.required">
+                                This field is required.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="form-group col-md-3" id="item_numberPayments">
+                        <label class="control-label" data-translate="adqApp.requirement.detail.numberPayments" for="field_numberPayments">Number Payments</label>
+                        <input type="text" class="form-control" name="numberPayments" id="field_numberPayments"
+                               ng-model="vm.requirement.requirementDetail.numberPayments" int-box />
+                    </div>
+                    <div class="panel panel-default col-md-6">
+                        <div class="panel-body">
+                            <div class="form-group col-md-6" id="item_initialDate" style="padding-left: 0px;">
+                                <label class="control-label" data-translate="adqApp.requirement.detail.initialDate" for="field_initialDate">Initial Date</label>
+                                <div class="input-group">
+                                    <input id="field_initialDate" type="text" class="form-control" name="initialDate"
+                                           uib-datepicker-popup="{{'dd/MM/yyyy'}}" ng-model="vm.requirement.requirementDetail.initialDate"
+                                           is-open="vm.datePickerOpenStatus.initialDate" ng-required="vm.isInitialDateRequired"
+                                           ng-blur="vm.validateDates()"/>
+                                    <span class="input-group-btn">
+                                        <button type="button" class="btn btn-default" id="btnDate_initialDate" ng-click="vm.openCalendar('initialDate')">
+                                            <i class="glyphicon glyphicon-calendar"></i>
+                                        </button>
+                                    </span>
+                                </div>
+                                <div ng-show="requirementDetailForm.initialDate.$invalid">
+                                    <p class="help-block"
+                                       ng-show="requirementDetailForm.initialDate.$error.required && vm.isInitialDateRequired" data-translate="entity.validation.required">
+                                        This field is required.
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-6" id="item_finalDate" style="padding-left: 0px;">
+                                <label class="control-label" data-translate="adqApp.requirement.detail.finalDate" for="field_finalDate">Final Date</label>
+                                <div class="input-group">
+                                    <input id="field_finalDate" type="text" class="form-control" name="finalDate"
+                                           uib-datepicker-popup="{{'dd/MM/yyyy'}}" ng-model="vm.requirement.requirementDetail.finalDate"
+                                           is-open="vm.datePickerOpenStatus.finalDate" ng-required="vm.isFinalDateRequired"
+                                           ng-blur="vm.validateDates()" />
+                                    <span class="input-group-btn">
+                                        <button type="button" class="btn btn-default" id="btnDate_finalDate" ng-click="vm.openCalendar('finalDate')">
+                                            <i class="glyphicon glyphicon-calendar"></i>
+                                        </button>
+                                    </span>
+                                </div>
+                                <div ng-show="requirementDetailForm.finalDate.$invalid">
+                                    <p class="help-block"
+                                       ng-show="requirementDetailForm.finalDate.$invalid && vm.isFinalDateRequired"
+                                       data-translate="entity.validation.required">
+                                        This field is required.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h2 data-translate="adqApp.requirement.detail.tabs.header" class="text-center">Requirement Details</h2>
+                    </div>
+                    <div class="panel-body">
+                        <uib-tabset active="activeTabRequirementData" id="activeTabRequirementData">
+                            <uib-tab index="0">
+                                <uib-tab-heading>
+                                    <span data-translate="adqApp.requirement.detail.tabs.budgets">Budget</span>
+                                </uib-tab-heading>
+                                <ng-form name="budgetReqDetForm" id="budgetReqDetForm" ng-if="!vm.isBlock && !vm.isFullBlock" isolate-form>
+                                    <div class="row">
+                                        <div class="alerts" rol="alerts" >
+                                            <div ng-repeat="alert in vm.alertsBudgets" ng-class="[alert.position, {'toast': alert.toast}]">
+                                                <uib-alert ng-cloak="" type="{{alert.type}}" close="alert.close(vm.alertsBudgets)">
+                                                    <p ng-bind-html="alert.msg">{{alert.params}}</p>
+                                                </uib-alert>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="form-group col-md-6" id="item_codeCuCop">
+                                            <label class="control-label" data-translate="adqApp.requirement.detail.budgets.codeCuCop"
+                                                   for="field_codeCuCop">Code Cu Cop</label>
+                                            <input type="text" class="form-control" name="codeCuCop" id="field_codeCuCop"
+                                                   ng-model="vm.budgetReqDet.codeCuCop" required/>
+                                            <div ng-show="budgetReqDetForm.codeCuCop.$invalid">
+                                                <p class="help-block"
+                                                   ng-show="budgetReqDetForm.codeCuCop.$error.required" data-translate="entity.validation.required">
+                                                    This field is required.
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <div class="form-group col-md-6">
+                                            <label class="control-label" data-translate="adqApp.requirement.detail.budgets.budget" for="field_budget_requirementDetail">Budget</label>
+                                            <input type="text" class="form-control" name="budget_requirementDetail" id="field_budget_requirementDetail"
+                                                   ng-model="vm.budgetReqDet.budget" int-box/>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="form-group col-md-6">
+                                            <label class="control-label" data-translate="adqApp.requirement.detail.budgets.descriptionCuCop" for="field_descriptionCuCop">Description Cu Cop</label>
+                                            <input type="text" class="form-control" name="descriptionCuCop" id="field_descriptionCuCop"
+                                                   ng-model="vm.budgetReqDet.descriptionCuCop" />
+                                        </div>
+                                        <div class="form-group col-md-6" id="item_description">
+                                            <label class="control-label" data-translate="adqApp.requirement.detail.budgets.description" for="field_description">Description</label>
+                                            <input type="text" class="form-control" name="description" id="field_description"
+                                                   ng-model="vm.budgetReqDet.description" required/>
+                                            <div ng-show="budgetReqDetForm.description.$invalid">
+                                                <p class="help-block"
+                                                   ng-show="budgetReqDetForm.description.$error.required" data-translate="entity.validation.required">
+                                                    This field is required.
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="form-group col-md-6">
+                                            <label class="control-label" data-translate="adqApp.requirement.detail.budgets.unitMeasure" for="field_unitMeasure">Unit Measure</label>
+                                            <input type="text" class="form-control" name="unitMeasure" id="field_unitMeasure"
+                                                   ng-model="vm.budgetReqDet.unitMeasure" />
+                                        </div>
+                                        <div class="form-group col-md-6" id="item_quantity">
+                                            <label class="control-label" data-translate="adqApp.requirement.detail.budgets.quantity" for="field_quantity">Quantity</label>
+                                            <input type="text" class="form-control" name="quantity" id="field_quantity"
+                                                   ng-model="vm.budgetReqDet.quantity" decimal-box ng-blur="vm.calculateTotal()" required/>
+                                            <div ng-show="budgetReqDetForm.quantity.$invalid">
+                                                <p class="help-block"
+                                                   ng-show="budgetReqDetForm.quantity.$error.required" data-translate="entity.validation.required">
+                                                    This field is required.
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="form-group col-md-6" id="item_unitPrice">
+                                            <label class="control-label" data-translate="adqApp.requirement.detail.budgets.unitPrice" for="field_unitPrice">Unit Price</label>
+                                            <input type="text" class="form-control" name="unitPrice" id="field_unitPrice"
+                                                   ng-model="vm.budgetReqDet.unitPrice" decimal-box ng-blur="vm.calculateTotal()"
+                                                    required/>
+                                            <div ng-show="budgetReqDetForm.unitPrice.$invalid">
+                                                <p class="help-block"
+                                                   ng-show="budgetReqDetForm.unitPrice.$error.required" data-translate="entity.validation.required">
+                                                    This field is required.
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <div class="form-group col-md-6">
+                                            <label class="control-label" data-translate="adqApp.requirement.detail.budgets.subtotal" for="field_subtotal">Subtotal</label>
+                                            <input type="text" class="form-control" name="subtotal" id="field_subtotal"
+                                                   ng-model="vm.budgetReqDet.subtotal" decimal-box disabled readonly
+                                                   ng-disabled="true" ng-readonly="true"/>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="form-group col-md-6">
+                                            <input type="checkbox" name="iva" id="field_iva" ng-model="vm.budgetReqDet.iva"
+                                                   ng-checked="vm.calculateTotal()" />
+                                            <label class="control-label" data-translate="adqApp.requirement.detail.budgets.iva"
+                                                   for="field_iva">Iva</label>
+                                        </div>
+                                        <div class="form-group col-md-6">
+                                            <label class="control-label" data-translate="adqApp.requirement.detail.budgets.ivaTotal" for="field_ivaTotal">Iva Total</label>
+                                            <input type="text" class="form-control" name="ivaTotal" id="field_ivaTotal"
+                                                   ng-model="vm.budgetReqDet.ivaTotal" decimal-box
+                                                   ng-readonly="true" ng-disabled="true" disabled readonly/>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="form-group col-md-6" id="item_otherCharges">
+                                            <label class="control-label" data-translate="adqApp.requirement.detail.budgets.otherCharges" for="field_otherCharges">Other Charges</label>
+                                            <input type="text" class="form-control" name="otherCharges" id="field_otherCharges"
+                                                   ng-model="vm.budgetReqDet.otherCharges" maxlength="3" max="100" ng-blur="vm.calculateTotal()"/>
+                                            <div ng-show="budgetReqDetForm.otherCharges.$invalid">
+                                                <p class="help-block"
+                                                   ng-show="budgetReqDetForm.otherCharges.$error.required" data-translate="entity.validation.required">
+                                                    This field is required.
+                                                </p>
+                                                <p class="help-block"
+                                                   ng-show="budgetReqDetForm.otherCharges.$error.max" data-translate="entity.validation.max" translate-value-max="100">
+                                                    This field cannot be more than 100.
+                                                </p>
+                                                <p class="help-block"
+                                                   ng-show="budgetReqDetForm.otherCharges.$error.number" data-translate="entity.validation.number">
+                                                    This field should be a number.
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <div class="form-group col-md-6">
+                                            <label class="control-label" data-translate="adqApp.requirement.detail.budgets.totalOtherCharges" for="field_totalOtherCharges">Total Other Charges</label>
+                                            <input type="text" class="form-control" name="totalOtherCharges" id="field_totalOtherCharges"
+                                                   ng-model="vm.budgetReqDet.totalOtherCharges" decimal-box disabled readonly
+                                                   ng-disabled="true" ng-readonly="true" />
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="form-group col-md-6">
+                                            <label class="control-label" data-translate="adqApp.requirement.detail.budgets.amount" for="field_amount">Amount</label>
+                                            <input type="text" class="form-control" name="amount" id="field_amount"
+                                                   ng-model="vm.budgetReqDet.amount" decimal-box disabled readonly
+                                                   ng-disabled="true" ng-readonly="true"/>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-xs-12">
+                                        <button type="submit" ng-disabled="budgetReqDetForm.$invalid || vm.isBlock || vm.isFullBlock" class="btn btn-primary" ng-click="vm.addBudgetReqDet()"
+                                                uib-tooltip="{{'entity.action.add' | translate}}">
+                                            <span class="glyphicon glyphicon-plus"></span>
+                                        </button>
+                                        <button type="submit" class="btn btn-danger" ng-if="vm.isUpdatedBudgetReqDet"
+                                                ng-click="vm.cancelUpdateBudgetReqDet()" uib-tooltip="{{'entity.action.cancelUpdate' | translate}}">
+                                            <i class="fa fa-undo fa-lg"></i>
+                                        </button>
+                                        </div>
+                                    </div>
+                                </ng-form>
+                                <div class="row">
+                                    <div class="table-responsive col-xs-12">
+                                        <table class="table table-bordered table-striped">
+                                            <thead>
+                                                <tr>
+                                                    <th><span data-translate="adqApp.requirement.detail.budgets.index">Index</span></th>
+                                                    <th><span data-translate="adqApp.requirement.detail.budgets.codeCuCop">Code CuCop</span></th>
+                                                    <th><span data-translate="adqApp.requirement.detail.budgets.budget">Budget</span></th>
+                                                    <th><span data-translate="adqApp.requirement.detail.budgets.descriptionCuCop">Description CuCop</span></th>
+                                                    <th><span data-translate="adqApp.requirement.detail.budgets.description">Description</span></th>
+                                                    <th><span data-translate="adqApp.requirement.detail.budgets.unitMeasure">Unit Measure</span></th>
+                                                    <th><span data-translate="adqApp.requirement.detail.budgets.quantity">Quantity</span></th>
+                                                    <th><span data-translate="adqApp.requirement.detail.budgets.unitPrice">Unit Price</span></th>
+                                                    <th><span data-translate="adqApp.requirement.detail.budgets.amount">Amount</span></th>
+                                                    <th ng-if="!vm.isBlock && !vm.isFullBlock"><span data-translate="adqApp.requirement.detail.budgets.options">Options</span></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr ng-repeat="budget in vm.requirement.requirementDetail.budgets">
+                                                    <td>{{budget.budgetOrder}}</td>
+                                                    <td>{{budget.codeCuCop}}</td>
+                                                    <td>{{budget.budget}}</td>
+                                                    <td>{{budget.descriptionCuCop}}</td>
+                                                    <td>{{budget.description}}</td>
+                                                    <td>{{budget.unitMeasure}}</td>
+                                                    <td>{{budget.quantity}}</td>
+                                                    <td>{{budget.unitPrice}}</td>
+                                                    <td>{{budget.amount}}</td>
+                                                    <td ng-if="!vm.isBlock && !vm.isFullBlock">
+                                                        <button type="submit" class="btn btn-info" ng-click="vm.updateBudgetReqDet(budget, $index)"
+                                                        uib-tooltip="{{'entity.action.edit' | translate}}" ng-disabled="vm.isBlock || vm.isFullBlock">
+                                                            <span class="glyphicon glyphicon-edit"></span>
+                                                        </button>
+                                                        <button type="submit" class="btn btn-danger" ng-click="vm.deleteBudgetReqDet(budget, $index)"
+                                                                uib-tooltip="{{'entity.action.delete' | translate}}" ng-disabled="vm.isBlock || vm.isFullBlock">
+                                                            <span class="glyphicon glyphicon-remove"></span>
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                            <tfoot>
+                                                <tr ng-repeat="footer in vm.totalBudgetReqDet">
+                                                    <th></th>
+                                                    <th></th>
+                                                    <th></th>
+                                                    <th></th>
+                                                    <th></th>
+                                                    <th></th>
+                                                    <th></th>
+                                                    <th><span data-translate="{{footer.totalType}}"></span></th>
+                                                    <th>{{footer.total | decimal}}</th>
+                                                    <th ng-if="!vm.isBlock && !vm.isFullBlock"></th>
+                                                </tr>
+                                            </tfoot>
+                                        </table>
+                                    </div>
+                                </div>
+                            </uib-tab>
+                            <uib-tab index="1">
+                                <uib-tab-heading>
+                                    <span data-translate="adqApp.requirement.detail.tabs.specifications">Specifications</span>
+                                </uib-tab-heading>
+                                <ng-form name="specificationReqDetForm" ng-if="!vm.isBlock && !vm.isFullBlock" isolate-form>
+                                    <div class="row">
+                                        <div class="alerts" rol="alerts" >
+                                            <div ng-repeat="alert in vm.alertsSpecifications" ng-class="[alert.position, {'toast': alert.toast}]">
+                                                <uib-alert ng-cloak="" type="{{alert.type}}" close="alert.close(vm.alertsSpecifications)">
+                                                    <p ng-bind-html="alert.msg">{{alert.params}}</p>
+                                                </uib-alert>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="form-group col-md-6" id="item_specificationBudget">
+                                            <label class="control-label" data-translate="adqApp.requirement.detail.specifications.budgetOrder" for="field_specificationBudget"></label>
+                                            <input type="text" class="form-control" name="specificationBudgetOrder" id="field_specificationBudget" int-box
+                                                   ng-model="vm.specificationReqDet.budget.budgetOrder" required/>
+                                            <div ng-show="specificationReqDetForm.specificationBudgetOrder.$invalid">
+                                                <p class="help-block"
+                                                   ng-show="specificationReqDetForm.specificationBudgetOrder.$error.required" data-translate="entity.validation.required">
+                                                    This field is required.
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <div class="form-group col-md-6" id="item_specification1">
+                                            <label class="control-label" data-translate="adqApp.requirement.detail.specifications.specification1" for="field_specification1">Specification1</label>
+                                            <input type="text" class="form-control" name="specification1" id="field_specification1"
+                                                   ng-model="vm.specificationReqDet.specification1"/>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="form-group col-md-6" id="item_specification2">
+                                            <label class="control-label" data-translate="adqApp.requirement.detail.specifications.specification2" for="field_specification2">Specification 2</label>
+                                            <input type="text" class="form-control" name="specification2" id="field_specification2"
+                                                   ng-model="vm.specificationReqDet.specification2"/>
+                                        </div>
+                                        <div class="form-group col-md-6" id="item_specification3">
+                                            <label class="control-label" data-translate="adqApp.requirement.detail.specifications.specification3" for="field_specification3">Specification 3</label>
+                                            <input type="text" class="form-control" name="specification3" id="field_specification3"
+                                                   ng-model="vm.specificationReqDet.specification3"/>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-xs-12">
+                                            <button type="submit" ng-disabled="specificationReqDetForm.$invalid || vm.isBlock || vm.isFullBlock" class="btn btn-primary"
+                                                    ng-click="vm.addSpecificationReqDet()" uib-tooltip="{{'entity.action.add' | translate}}">
+                                                <span class="glyphicon glyphicon-plus"></span>
+                                            </button>
+                                            <button type="submit" class="btn btn-danger" ng-if="vm.isUpdateSpecificationReqDet"
+                                                    ng-click="vm.cancelUpdateSpecificationReqDet()" uib-tooltip="{{'entity.action.cancelUpdate' | translate}}">
+                                                <i class="fa fa-undo fa-lg"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </ng-form>
+                                <div class="row">
+                                    <div class="table-responsive col-xs-12">
+                                        <table class="table table-bordered table-striped">
+                                            <thead>
+                                                <tr>
+                                                    <th><span data-translate="adqApp.requirement.detail.specifications.budgetOrder">Budget Order</span></th>
+                                                    <th><span data-translate="adqApp.requirement.detail.specifications.specification1">Specification 1</span></th>
+                                                    <th><span data-translate="adqApp.requirement.detail.specifications.specification2">Specification 2</span></th>
+                                                    <th><span data-translate="adqApp.requirement.detail.specifications.specification3">Specification 3</span></th>
+                                                    <th ng-if="!vm.isBlock && !vm.isFullBlock"><span data-translate="adqApp.requirement.detail.specifications.options">Options</span></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr ng-repeat="specification in vm.requirement.requirementDetail.specifications">
+                                                    <td>{{specification.budget.budgetOrder}}</td>
+                                                    <td>{{specification.specification1}}</td>
+                                                    <td>{{specification.specification2}}</td>
+                                                    <td>{{specification.specification3}}</td>
+                                                    <td ng-if="!vm.isBlock && !vm.isFullBlock">
+                                                        <button type="submit" class="btn btn-info" ng-click="vm.updateSpecificationReqDet(specification, $index)"
+                                                                uib-tooltip="{{'entity.action.edit' | translate}}" ng-disabled="vm.isBlock || vm.isFullBlock">
+                                                            <span class="glyphicon glyphicon-edit"></span>
+                                                        </button>
+                                                        <button type="submit" class="btn btn-danger" ng-click="vm.deleteSpecificationReqDet(specification, $index)"
+                                                                uib-tooltip="{{'entity.action.delete' | translate}}" ng-disabled="vm.isBlock || vm.isFullBlock">
+                                                            <span class="glyphicon glyphicon-remove"></span>
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </uib-tab>
+                            <uib-tab index="2" ><!--ng-if="vm.isRequirementAproved || vm.isFormalized || vm.isAdjudication"-->
+                                <uib-tab-heading>
+                                    <span data-translate="adqApp.requirement.detail.tabs.formalizations">Formalize Order</span>
+                                </uib-tab-heading>
+                                <ng-form name="formalizationReqDetForm" isolate-form><!-- ng-if="vm.isRequirementAproved"-->
+                                    <div class="row">
+                                        <div class="alerts" rol="alerts" >
+                                            <div ng-repeat="alert in vm.alertsFormalizations" ng-class="[alert.position, {'toast': alert.toast}]">
+                                                <uib-alert ng-cloak="" type="{{alert.type}}" close="alert.close(vm.alertsFormalizations)">
+                                                    <p ng-bind-html="alert.msg">{{alert.params}}</p>
+                                                </uib-alert>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="form-group col-md-4" id="item_formalizationBudget">
+                                            <label class="control-label" data-translate="adqApp.requirement.detail.formalizations.budgetOrder" for="field_formalizationBudget"></label>
+                                            <input type="text" class="form-control" name="formalizationBudget" id="field_formalizationBudget" int-box
+                                                   ng-model="vm.formalizationReqDet.budget.budgetOrder" required/>
+                                            <div ng-show="formalizationReqDetForm.formalizationBudget.$invalid">
+                                                <p class="help-block"
+                                                   ng-show="formalizationReqDetForm.formalizationBudget.$error.required" data-translate="entity.validation.required">
+                                                    This field is required.
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <div class="form-group col-md-4" id="item_supplier">
+                                            <label class="control-label" data-translate="adqApp.requirement.detail.formalizations.supplier"
+                                                    for="field_supplier">Supplier</label>
+                                            <select class="form-control" id="field_supplier" name="supplier" ng-model="vm.formalizationReqDet.supplier"
+                                                    ng-options="supplier as supplier.tradeName for supplier in vm.suppliers track by supplier.id"
+                                                    required >
+                                                <option value=""></option>
+                                            </select>
+                                            <div ng-show="formalizationReqDetForm.supplier.$invalid">
+                                                <p class="help-block"
+                                                   ng-show="formalizationReqDetForm.supplier.$error.required" data-translate="entity.validation.required">
+                                                    This field is required.
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <div class="form-group col-md-4" id="item_orderNumber">
+                                            <label class="control-label" data-translate="adqApp.requirement.detail.formalizations.orderNumber" for="field_orderNumber">Order Number</label>
+                                            <input type="text" class="form-control" name="orderNumber" id="field_orderNumber"
+                                                   ng-model="vm.formalizationReqDet.orderNumber" int-box required/>
+                                            <div ng-show="formalizationReqDetForm.orderNumber.$invalid">
+                                                <p class="help-block"
+                                                   ng-show="formalizationReqDetForm.orderNumber.$error.required" data-translate="entity.validation.required">
+                                                    This field is required.
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-xs-12">
+                                            <button type="submit" id="btn_addFormalizationReqDet" ng-disabled="formalizationReqDetForm.$invalid" class="btn btn-primary"
+                                                    ng-click="vm.addFormalizationReqDet()" uib-tooltip="{{'entity.action.add' | translate}}"><!--|| vm.isFormalized-->
+                                                <span class="glyphicon glyphicon-plus"></span>
+                                            </button>
+                                            <button type="submit" id="btn_cancelUpdateFormalizationReqDet" class="btn btn-danger" ng-if="vm.isUpdateFormalizationReqDet"
+                                                    ng-click="vm.cancelUpdateFormalizationReqDet()" uib-tooltip="{{'entity.action.cancelUpdate' | translate}}"
+                                                    ng-disabled="vm.isFormalized">
+                                                <span class="fa fa-undo fa-lg"></span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </ng-form>
+                                <div class="row" ><!--ng-if="vm.isRequirementAproved || vm.isFormalized || vm.isAdjudication"-->
+                                    <div class="table-responsive col-xs-12">
+                                        <table class="table table-bordered table-striped">
+                                            <thead>
+                                                <tr>
+                                                    <th><span data-translate="adqApp.requirement.detail.formalizations.budgetOrder">Order</span></th>
+                                                    <th><span data-translate="adqApp.requirement.detail.formalizations.supplier">Supplier</span></th>
+                                                    <th><span data-translate="adqApp.requirement.detail.formalizations.orderNumber">Order Number</span></th>
+                                                    <!--ng-if="!vm.isFormalized && !vm.isFullBlock"--><th><span data-translate="adqApp.requirement.detail.formalizations.options">Options</span></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr ng-repeat="formalization in vm.formalizations">
+                                                    <td>{{formalization.budget.budgetOrder}}</td>
+                                                    <td>{{formalization.supplier.tradeName}}</td>
+                                                    <td>{{formalization.orderNumber}}</td>
+                                                    <td><!--ng-if="!vm.isFormalized && vm.isFullBlock"-->
+                                                        <button type="submit" class="btn btn-info" ng-click="vm.updateFormalizationReqDet(formalization, $index)"
+                                                                uib-tooltip="{{'entity.action.edit' | translate}}" ng-disabled="vm.isFormalized">
+                                                            <span class="glyphicon glyphicon-edit"></span>
+                                                        </button>
+                                                        <button type="submit" class="btn btn-danger" ng-click="vm.deleteFormalizationReqDet($index)"
+                                                                uib-tooltip="{{'entity.action.delete' | translate}}" ng-disabled="vm.isFormalized">
+                                                            <span class="glyphicon glyphicon-remove"></span>
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group col-md-4">
+                                        <input type="checkbox" id="field_authorized" name="authorized" ng-model="vm.requirement.authorized" >
+                                        <label for="field_authorized" data-translate="adqApp.requirement.authorized">Authorized</label>
+                                    </div>
+                                    <div class="form-group col-md-8">
+                                        <label for="requirement_justification" data-translate="adqApp.requirement.justification">Justification</label>
+                                        <textarea class="form-control" id="requirement_justification" name="requirement_justification"
+                                                  ng-model="vm.requirement.justification.text" row="2" ng-required="vm.formalizationReqDet.authorized" />
+                                        <div ng-show="editForm.requirement_justification.$invalid">
+                                            <p class="help-block"
+                                               ng-show="editForm.requirement_justification.$error.required" data-translate="entity.validation.required">
+                                                This field is required.
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </uib-tab>
+                        </uib-tabset>
+                    </div>
+                </div>
+            </ng-form>
+        </uib-tab>
+        <uib-tab index="4" ng-show="!vm.isNew" id="tabComments">
+            <uib-tab-heading>
+                <span data-translate="adqApp.requirement.tabs.comments.header">Comments</span>
+            </uib-tab-heading>
+            <div class="list-group" id="commentsList">
+                <div class="list-group-item list-group-item-success row">
+                    <div class="col-sm-2">
+                        <span data-translate="adqApp.requirement.tabs.comments.user">User</span>
+                    </div>
+                    <div class="col-sm-8">
+                        <span data-translate="adqApp.requirement.tabs.comments.comment">Comment</span>
+                    </div>
+                    <div class="col-sm-2">
+                        <span data-translate="adqApp.requirement.tabs.comments.dateHour">DateHour</span>
+                    </div>
+                </div>
+                <div class="list-group-item row" ng-show="vm.comments.length === 0">
+                    <div class="col-sm-12">
+                        <span data-translate="adqApp.comments.notFound"></span>
+                    </div>
+                </div>
+                <div class="list-group-item row" ng-repeat="comment in vm.comments" ng-show="vm.comments.length > 0">
+                    <div class="col-sm-2">{{comment.user.login}}</div>
+                    <div class="col-sm-8" style="white-space: pre-line">{{comment.text}}</div>
+                    <div class="col-sm-2">{{comment.dateHour | date: 'dd/MM/yyyy hh:mm a'}}</div>
+                </div>
+                <div class="list-group-item row" ng-show="!vm.loadComplete && vm.comments.length > 0">
+                    <button type="button" class="btn btn-success" ng-click="vm.loadAll()">
+                        <i class="fa fa-history fa-lg"></i>&nbsp;
+                        <span data-translate="adqApp.comments.showAll"></span>
+                    </button>
+                </div>
+
+            </div>
+        </uib-tab>
+    </uib-tabset>
+    <div class="row" ng-if="vm.isNewRequirementFolio">
+        <div class="alert alert-warning">
+            <span data-translate="adqApp.requirement.validation.completeFieldsRequired" style="font-size: 18px;"></span>
+        </div>
+    </div>
+    <div class="row">
+        <div class="text-center">
+            <button type="submit" class="btn btn-info" ng-click="vm.back()">
+                <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;<span data-translate="entity.action.back"> Back</span>
+            </button>
+            <button type="submit" ng-disabled="editForm.$invalid || vm.isSaving || !vm.hasPermissionSaveRequirement || vm.isBlock || vm.isFullBlock" class="btn btn-primary" ng-click="vm.save()">
+                <span class="glyphicon glyphicon-save"></span>&nbsp;<span data-translate="entity.action.save">Save</span>
+            </button>
+            <button type="submit" ng-click="vm.cancel()" class="btn btn-danger"
+                    ng-disabled="(editForm.$invalid && !vm.isNew) || vm.isNew || (!vm.isNew && !vm.isCancellable) || !vm.hasPermissionCancelRequirement">
+                <span class="glyphicon glyphicon-remove-circle"></span>
+                <span class="hidden-sm-down" data-translate="entity.action.cancel"></span>
+            </button>
+            <button id="btnSendToAdmin" type="submit" class="btn btn-default" ng-click="vm.sendToAdmin()" ng-show="vm.isUserApplicant"
+                ng-disabled="(editForm.$invalid && !vm.isNew) || vm.isNew  || !vm.hasPermissionSentToAdmin || vm.isBlock || vm.isFullBlock">
+                <span class="glyphicon glyphicon-send"></span>&nbsp;
+                <span data-translate="adqApp.requirement.action.sendToAdmin"> Send to Review</span>
+            </button>
+            <button id="btnSendTo" type="submit" class="btn btn-default" ng-click="vm.sendTo()"
+                    ng-show="vm.isUserAdmin || vm.isUserHeadDepartment" ng-disabled="!vm.hasPermissionAssing">
+                <span class="glyphicon glyphicon-send"></span>&nbsp;
+                <span data-translate="adqApp.requirement.action.sendTo"> Send to Review</span>
+            </button>
+            <button id="btnGiveBack" type="submit" class="btn btn-default" ng-click="vm.giveBack()"
+                    ng-disabled="!vm.hasPermissionGiveBack">
+                <i class="fa fa-undo fa-lg"></i>&nbsp;
+                <span data-translate="adqApp.requirement.action.giveBack"> Give Back</span>
+            </button>
+            <button id="btnReviewed" type="submit" class="btn btn-default" ng-click="vm.reviewed()"
+                    ng-disabled="true">
+                <i class="fa fa-list-ol fa-lg"></i>&nbsp;
+                <span data-translate="adqApp.requirement.action.reviewed"> Reviewed</span>
+            </button>
+            <button id="btnApprove" type="submit" class="btn btn-default" ng-click="vm.approve()"
+                    ng-disabled="!vm.hasPermissionApprove" ng-readonly="!vm.hasPermissionApprove">
+                <span class="glyphicon glyphicon-check"></span>&nbsp;
+                <span data-translate="adqApp.requirement.action.approve"> Approve</span>
+            </button>
+            <button id="btnFormalize" type="submit" class="btn btn-default" ng-click="vm.formalize()">
+                <span class="glyphicon glyphicon-star"></span>&nbsp;
+                <span data-translate="">Formalize</span>
+            </button>
+            <button id="btnAdjudication" type="submit" class="btn btn-default" ng-click="vm.adjudication()"
+                    ng-disabled="true">
+                <i class="fa fa-money fa-lg"></i>&nbsp;
+                <span data-translate="adqApp.requirement.action.adjudication"> Adjudication</span>
+            </button>
+            <button id="btnPrint" type="submit" class="btn btn-default" ng-click="vm.print()"
+                    ng-disabled="true">
+                <span class="glyphicon glyphicon-print"></span>&nbsp;
+                <span data-translate="adqApp.requirement.action.print"> Print</span>
+            </button>
+        </div>
+    </div>
+</form>
+
+
+
+

@@ -1,0 +1,22 @@
+<form name="approveForm" ng-submit="vm.confirmApproval()">
+    <div class="modal-header inverse">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
+                ng-click="vm.clear()">&times;</button>
+        <h4 class="modal-title" data-translate="adqApp.requirement.approve.header">Confirm Approve</h4>
+    </div>
+    <div class="modal-body">
+        <jhi-alert-error></jhi-alert-error>
+        <p data-translate="adqApp.requirement.approve.message" ng-bind-html="adqApp.requirement.approve.message"
+           translate-values="{folio: '{{vm.requirement.folio}}'}">
+            Are you sure you want to approve this requirement?
+        </p>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="vm.clear()">
+            <span class="glyphicon glyphicon-ban-circle"></span>&nbsp;<span data-translate="entity.action.no">Cancel</span>
+        </button>
+        <button type="submit" ng-disabled="approveForm.$invalid" class="btn btn-primary">
+            <span class="glyphicon glyphicon-check"></span>&nbsp;<span data-translate="entity.action.yes">Accept</span>
+        </button>
+    </div>
+</form>

@@ -1,0 +1,17 @@
+<form name="messageForm">
+    <div class="modal-header inverse">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
+                ng-click="vm.clear()">&times;</button>
+        <h4 class="modal-title" data-translate="{{vm.header}}">Confirm assign to Reviewer</h4>
+    </div>
+    <div class="modal-body">
+        <p data-translate="{{vm.message}}" translate-values="{{vm.params}}">
+            Your message
+        </p>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="vm.clear()">
+            <span class="glyphicon glyphicon-ok-sign"></span>&nbsp;<span data-translate="entity.action.accept">Accept</span>
+        </button>
+    </div>
+</form>
