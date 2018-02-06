@@ -1,0 +1,56 @@
+
+<div class="modal fade" tabindex="-1" id="poll-detail" role="dialog" aria-labelledby="viewResultsLabel">
+            <div class="modal-dialog modal-md">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="viewResultsLabel">Poll Results</h4>
+                    </div>
+                    <div class="modal-body">
+                        <form>
+                            <div class="row">
+                                <div class="col-sm-10">
+                                    <div class="form-group-small">
+                                        <label>Question</label>
+                                        <span class="form-control input-sm read-input" type="text" id="ViewPollResult_Question">{{pollQuestion}}</span>
+                                        <span class="highlight"></span>
+                                        <span class="bar"></span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-sm-10">
+                                    <label>Answers</label>
+                                    
+                                    <nvd3 options="chart.options" data="chart.data"></nvd3>
+
+                                                                        
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                
+                                <div class="col-sm-10">
+                                    <div class="form-group-small">
+                                        <label>Session</label>
+                                        <span class="form-control input-sm read-input" type="text" id="ViewPollResult_Question">{{pollSessionName}}</span>
+                                        <span class="highlight"></span>
+                                        <span class="bar"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <center>
+                            <div class="form-inline">
+                                <div class="form-group">
+                                    <button type="button" class="button-cancel" data-dismiss="modal"><span>Close</span></button>
+                                </div>
+                            </div>
+                        </center>
+                    </div>
+                </div>
+            </div>
+        </div>
