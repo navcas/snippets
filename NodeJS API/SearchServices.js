@@ -7,7 +7,7 @@ var async = require('async');
 
 module.exports = function (UserBase) {
 
-    UserBase.searchSupliers = function(id, search, latitude, longitude, radius, sort, offset, limit, cb){
+    UserBase.searchServices = function(id, search, latitude, longitude, radius, sort, offset, limit, cb){
 
         if(!limit)
             limit = 20;
@@ -158,9 +158,9 @@ module.exports = function (UserBase) {
     }
 
     UserBase.remoteMethod(
-        'searchSupliers',
+        'searchServices',
         {
-            description: 'Search suppliers',
+            description: 'Search services',
             http: {
                 verb: 'get',
                 path: '/:id/Service/Search'
